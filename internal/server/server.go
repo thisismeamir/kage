@@ -63,19 +63,3 @@ func New() *Server {
 func (s *Server) Start(addr string) error {
 	return s.router.Run(addr)
 }
-
-func addPathOfAtoms(c *gin.Context) {
-	var req config.AtomPathRequest
-	if err := c.BindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "invalid request"})
-		return
-	}
-
-	// Example response (replace with your logic)
-	resp := config.AtomPathResponse{
-		AtomPath: req.Path,
-		Exists:   true, // or your actual check
-		Valid:    true, // or your actual validation
-	}
-	c.JSON(200, resp)
-}

@@ -2,14 +2,14 @@ package watcher
 
 import (
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/atom"
+	module "github.com/thisismeamir/kage/pkg/module"
 	"log"
 )
 
-func WatchAtomPaths(callback func(FileSystemEvent)) error {
-	var localPaths []atom.AtomPath
+func WatchModulePaths(callback func(FileSystemEvent)) error {
+	var localPaths []module.ModulePath
 
-	for _, path := range i.GetGlobalConfig().AtomPaths {
+	for _, path := range i.GetGlobalConfig().ModulePaths {
 		if path.Local {
 			localPaths = append(localPaths, path)
 		}
@@ -20,7 +20,7 @@ func WatchAtomPaths(callback func(FileSystemEvent)) error {
 	for _, item := range localPaths {
 		paths = append(paths, item.Path)
 	}
-	log.Printf("Local Atom Paths: %v", paths)
+	log.Printf("Local Module Paths: %v", paths)
 	watcher, err := NewWatcher(paths, callback)
 	if err != nil {
 		return err

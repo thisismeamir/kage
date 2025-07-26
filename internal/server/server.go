@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	i "github.com/thisismeamir/kage/internal/init"
+	i "github.com/thisismeamir/kage/internal/bootstrap"
 	configAPI "github.com/thisismeamir/kage/internal/server/api/v1/config"
 	configAtoms "github.com/thisismeamir/kage/internal/server/api/v1/config/atoms"
 	configModules "github.com/thisismeamir/kage/internal/server/api/v1/config/modules"

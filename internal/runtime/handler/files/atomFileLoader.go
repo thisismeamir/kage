@@ -1,20 +1,20 @@
-package loading
+package files
 
 import (
 	"encoding/json"
-	module "github.com/thisismeamir/kage/pkg/module"
+	"github.com/thisismeamir/kage/pkg/atom"
 	"io"
 	"log"
 	"os"
 )
 
-func ModuleFileHandler(path string) module.ModuleModel {
+func AtomFileLoader(path string) atom.AtomModel {
 	file, err := os.Open(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			// If the file does not exist, return an empty Config
 			log.Println("file does not exist:", path)
-			return module.ModuleModel{}
+			return atom.AtomModel{}
 		}
 		// If there is another error, log it and return an empty Config
 		log.Fatal(err)
@@ -26,9 +26,9 @@ func ModuleFileHandler(path string) module.ModuleModel {
 		log.Fatal(err)
 	}
 
-	var loadedModule module.ModuleModel
-	if err := json.Unmarshal(data, &loadedModule); err != nil {
-		return module.ModuleModel{}
+	var loadedAtom atom.AtomModel
+	if err := json.Unmarshal(data, &loadedAtom); err != nil {
+		return atom.AtomModel{}
 	}
-	return loadedModule
+	return loadedAtom
 }

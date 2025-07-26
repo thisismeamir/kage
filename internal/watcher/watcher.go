@@ -2,7 +2,6 @@ package watcher
 
 import (
 	"github.com/fsnotify/fsnotify"
-	i "github.com/thisismeamir/kage/internal/init"
 	"log"
 )
 
@@ -58,24 +57,4 @@ func (w *Watcher) Start() error {
 
 func (w *Watcher) Close() error {
 	return w.watcher.Close()
-}
-
-// FileSystemWatch remains for backward compatibility
-func FileSystemWatch() {
-	pathsToCheck := i.GetGlobalConfig().AtomPaths
-	var paths []string
-	for _, p := range pathsToCheck {
-		paths = append(paths, p.Path)
-	}
-	w, err := NewWatcher(paths, func(event FileSystemEvent) {
-		log.Println("event:", event)
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer w.Close()
-	if err := w.Start(); err != nil {
-		log.Fatal(err)
-	}
-	<-make(chan struct{})
 }

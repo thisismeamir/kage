@@ -1,18 +1,18 @@
 package bootstrap
 
 import (
-	"github.com/thisismeamir/kage/pkg/atom"
-	atom2 "github.com/thisismeamir/kage/pkg/module"
+	atom "github.com/thisismeamir/kage/pkg/atom"
+	module "github.com/thisismeamir/kage/pkg/module"
 )
 
 type Config struct {
-	Name        string             `json:"name"`
-	BasePath    string             `json:"base_path"`
-	ModulePaths []atom2.ModulePath `json:"module_paths"`
-	AtomPaths   []atom.AtomPath    `json:"atom_paths"`
-	Version     string             `json:"version"`
-	Server      ServerConfig       `json:"server"`
-	Client      ClientConfig       `json:"client"`
+	Name        string              `json:"name"`
+	BasePath    string              `json:"base_path"`
+	ModulePaths []module.ModulePath `json:"module_paths"`
+	AtomPaths   []atom.AtomPath     `json:"atom_paths"`
+	Version     string              `json:"version"`
+	Server      ServerConfig        `json:"server"`
+	Client      ClientConfig        `json:"client"`
 }
 
 type ServerConfig struct {

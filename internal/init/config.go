@@ -1,13 +1,15 @@
 package init
 
+import "github.com/thisismeamir/kage/internal/models"
+
 type Config struct {
-	Name        string       `json:"name"`
-	BasePath    string       `json:"base_path"`
-	ModulePaths []string     `json:"module_paths"`
-	AtomPaths   []string     `json:"atom_paths"`
-	Version     string       `json:"version"`
-	Server      ServerConfig `json:"server"`
-	Client      ClientConfig `json:"client"`
+	Name        string              `json:"name"`
+	BasePath    string              `json:"base_path"`
+	ModulePaths []models.ModulePath `json:"module_paths"`
+	AtomPaths   []models.AtomPath   `json:"atom_paths"`
+	Version     string              `json:"version"`
+	Server      ServerConfig        `json:"server"`
+	Client      ClientConfig        `json:"client"`
 }
 
 type ServerConfig struct {

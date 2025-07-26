@@ -1,7 +1,13 @@
 package server
 
 import (
-	"github.com/thisismeamir/kage/internal/server/config"
+	"fmt"
+	i "github.com/thisismeamir/kage/internal/init"
+	configAPI "github.com/thisismeamir/kage/internal/server/api/v1/config"
+	configAtoms "github.com/thisismeamir/kage/internal/server/api/v1/config/atoms"
+	configModules "github.com/thisismeamir/kage/internal/server/api/v1/config/modules"
+
+	"log"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -18,6 +24,8 @@ type Server struct {
 func New() *Server {
 	router := gin.Default()
 
+	addr := fmt.Sprintf("http://%s:%d", i.GetGlobalConfig().Client.Web.Host, i.GetGlobalConfig().Client.Web.Port)
+	log.Println("Answering CORS requests from:", addr)
 	// Add CORS middleware
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"}, // Next.js dev server

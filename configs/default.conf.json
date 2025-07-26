@@ -1,11 +1,17 @@
 {
   "name": "Kage for Kid A",
-  "basePath": "./",
+  "base_path": "",
   "module_paths": [
-    "./modules"
+    {
+      "path": "./modules",
+      "local": true
+    }
   ],
   "atom_paths": [
-    "./atoms"
+    {
+      "path": "./atoms",
+      "local": true
+    }
   ],
   "version": "1.0.0",
   "server": {
@@ -25,7 +31,7 @@
     }
   },
   "client": {
-    "web":{
+    "Web": {
       "port": 3000,
       "host": "localhost",
       "network_accessible": false,

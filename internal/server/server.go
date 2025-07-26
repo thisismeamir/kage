@@ -28,7 +28,7 @@ func New() *Server {
 	log.Println("Answering CORS requests from:", addr)
 	// Add CORS middleware
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Next.js dev server
+		AllowOrigins:     []string{addr, "*"}, // Next.js dev server
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -45,7 +45,16 @@ func New() *Server {
 	// API routes
 	api := router.Group("/api/v1")
 	{
-		api.POST("/config/atoms_path", addPathOfAtoms)
+		// Get configuration file
+		api.GET("/config", configAPI.GetConfiguration)
+		// Atom Paths
+		api.GET("/config/atoms", configAtoms.GetAtomPaths)      // Get all atom paths
+		api.POST("/config/atoms", configAtoms.AddAtomPath)      // Add a new atom path
+		api.DELETE("/config/atoms", configAtoms.DeleteAtomPath) // Add a new atom path
+		// Module Paths
+		api.GET("/config/modules", configModules.GetModulePaths)      // Get all atom paths
+		api.POST("/config/modules", configModules.AddModulePath)      // Add a new atom path
+		api.DELETE("/config/modules", configModules.DeleteModulePath) // Add a new atom path
 	}
 
 	return &Server{router: router}

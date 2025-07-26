@@ -1,15 +1,21 @@
-package modules
+package atoms
 
 import (
 	"github.com/gin-gonic/gin"
-	i "github.com/thisismeamir/kage/internal/init"
-	"github.com/thisismeamir/kage/internal/models"
-	"github.com/thisismeamir/kage/internal/server/config"
+	i "github.com/thisismeamir/kage/internal/bootstrap"
+	"github.com/thisismeamir/kage/pkg/atom"
 	"os"
 )
 
-func AddModulePath(c *gin.Context) {
-	var req models.ModulePath
+// AddAtomPathResponse is the response structure for checking the existence and validity of an atom path.
+type AddAtomPathResponse struct {
+	AtomPath string `json:"atomPath"`
+	Added    bool   `json:"added"`
+	Message  string `json:"message"`
+}
+
+func AddAtomPath(c *gin.Context) {
+	var req atom.AtomPath
 
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
@@ -23,9 +29,9 @@ func AddModulePath(c *gin.Context) {
 			return
 		}
 		// Check if the path is already in the config
-		for _, modulePath := range i.GetGlobalConfig().ModulePaths {
-			if modulePath.Path == req.Path {
-				c.JSON(200, gin.H{"error": "Module path already exists"})
+		for _, atomPath := range i.GetGlobalConfig().AtomPaths {
+			if atomPath.Path == req.Path {
+				c.JSON(200, gin.H{"error": "atom path already exists"})
 				return
 			}
 		}
@@ -33,8 +39,8 @@ func AddModulePath(c *gin.Context) {
 		i.SetGlobalConfig(i.Config{
 			Name:        i.GetGlobalConfig().Name,
 			BasePath:    i.GetGlobalConfig().BasePath,
-			ModulePaths: append(i.GetGlobalConfig().ModulePaths, req),
-			AtomPaths:   i.GetGlobalConfig().AtomPaths,
+			ModulePaths: i.GetGlobalConfig().ModulePaths,
+			AtomPaths:   append(i.GetGlobalConfig().AtomPaths, req),
 			Version:     i.GetGlobalConfig().Version,
 			Server:      i.GetGlobalConfig().Server,
 			Client:      i.GetGlobalConfig().Client,
@@ -44,10 +50,10 @@ func AddModulePath(c *gin.Context) {
 
 	}
 	// Example response (replace with your logic)
-	resp := config.AddModulePathResponse{
-		ModulePath: req.Path,
-		Added:      true,
-		Message:    "Module path added successfully.",
+	resp := AddAtomPathResponse{
+		AtomPath: req.Path,
+		Added:    true,
+		Message:  "Atom path added successfully.",
 	}
 	c.JSON(200, resp)
 }

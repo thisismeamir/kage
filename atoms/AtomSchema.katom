@@ -10,10 +10,11 @@
        "manual": "https://example.com/manual",
        "repository": "https://example.com/atom_source"
     },
-    execution_model: {
+    "execution_model": {
         "language": "javascript",
-        input_schema: {},
-        output_schema: {},
-        source: [""]
+        "input_schema": {},
+        "output_schema": {},
+
     },
+    source: [""]
 }

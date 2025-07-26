@@ -1,0 +1,37 @@
+{
+  "name": "Kage for Kid A",
+  "basePath": "./",
+  "module_paths": [
+    "./modules"
+  ],
+  "atom_paths": [
+    "./atoms"
+  ],
+  "version": "1.0.0",
+  "server": {
+    "port": 8080,
+    "host": "localhost",
+    "api": {
+      "base_url": "/api",
+      "version": "v1"
+    },
+    "database": {
+      "type": "sqlite",
+      "path": "./data/database.sqlite"
+    },
+    "logging": {
+      "level": "info",
+      "file": "./logs/kage.log"
+    }
+  },
+  "client": {
+    "web":{
+      "port": 3000,
+      "host": "localhost",
+      "network_accessible": false,
+      "path": "./web",
+      "build": "npm build",
+      "run": "npm run"
+    }
+  }
+}

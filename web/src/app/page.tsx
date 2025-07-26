@@ -1,103 +1,116 @@
-import Image from "next/image";
+'use client'
+import React, { useState, useEffect } from 'react'
+import {
+    Grid,
+    Column,
+    Tile,
+    DataTable,
+    Table,
+    TableHead,
+    TableRow,
+    TableHeader,
+    TableBody,
+    TableCell,
+    Tag,
+    ProgressBar,
+    InlineLoading,
+    Button
+} from '@carbon/react'
+import {Play, Stop, Restart, AddAlt, FlowData} from '@carbon/icons-react'
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+interface SystemStatus {
+    status: string
+    modules: number
+    atoms: number
+    memoryUsage: number
+    cpuUsage: number
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+interface ModuleStatus {
+    id: string
+    name: string
+    status: 'running' | 'stopped' | 'error'
+    lastRun: string
+    nextRun?: string
+}
+
+export default function Dashboard() {
+    const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null)
+    const [modules, setModules] = useState<ModuleStatus[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Simulate API calls
+                await new Promise(resolve => setTimeout(resolve, 1000))
+
+                setSystemStatus({
+                    status: 'running',
+                    modules: 5,
+                    atoms: 23,
+                    memoryUsage: 45,
+                    cpuUsage: 23
+                })
+
+                setModules([
+                    { id: '1', name: 'Email Auto-Responder', status: 'running', lastRun: '2025-01-15 10:30:00', nextRun: '2025-01-15 11:00:00' },
+                    { id: '2', name: 'Content Pipeline', status: 'running', lastRun: '2025-01-15 10:25:00' },
+                    { id: '3', name: 'System Monitor', status: 'stopped', lastRun: '2025-01-15 09:45:00' },
+                    { id: '4', name: 'Git Backup', status: 'error', lastRun: '2025-01-15 09:30:00' },
+                    { id: '5', name: 'Document Processor', status: 'running', lastRun: '2025-01-15 10:35:00', nextRun: '2025-01-15 14:00:00' }
+                ])
+            } catch (error) {
+                console.error('Failed to fetch data:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
+
+    const getStatusTag = (status: string) => {
+        switch (status) {
+            case 'running': return <Tag type="green">Running</Tag>
+            case 'stopped': return <Tag type="gray">Stopped</Tag>
+            case 'error': return <Tag type="red">Error</Tag>
+            default: return <Tag>{status}</Tag>
+        }
+    }
+
+    const moduleRows = modules.map((module) => ({
+        id: module.id,
+        name: module.name,
+        status: getStatusTag(module.status),
+        lastRun: module.lastRun,
+        nextRun: module.nextRun || 'On-demand',
+        actions: (
+            <div className="flex gap-2">
+                <Button kind="ghost" size="sm" renderIcon={Play} iconDescription="Start" />
+                <Button kind="ghost" size="sm" renderIcon={Stop} iconDescription="Stop" />
+                <Button kind="ghost" size="sm" renderIcon={Restart} iconDescription="Restart" />
+            </div>
+        )
+    }))
+
+    const moduleHeaders = [
+        { key: 'name', header: 'Module Name' },
+        { key: 'status', header: 'Status' },
+        { key: 'lastRun', header: 'Last Run' },
+        { key: 'nextRun', header: 'Next Run' },
+        { key: 'actions', header: 'Actions' }
+    ]
+
+    if (loading) {
+        return (
+            <div className="p-8">
+                <InlineLoading description="Loading dashboard..." />
+            </div>
+        )
+    }
+
+    return (
+        <div>Hello World </div>
+    )
 }

@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "kage-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,19 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@carbon/charts": "^1.23.14",
+    "@carbon/charts-react": "^1.23.14",
+    "@carbon/icons-react": "^11.63.0",
+    "@carbon/react": "^1.87.1",
+    "@carbon/styles": "^1.86.1",
+    "next": "15.4.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.4"
+    "reactflow": "^11.11.4",
+    "sass": "^1.89.2"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.4.4",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

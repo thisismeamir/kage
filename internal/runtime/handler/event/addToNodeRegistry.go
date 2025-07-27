@@ -1,14 +1,47 @@
 package event
 
 import (
+	"encoding/json"
+	i "github.com/thisismeamir/kage/internal/bootstrap"
 	. "github.com/thisismeamir/kage/pkg/node"
+	"log"
+	"os"
 )
 
-func AddToNodeRegistry(nodePath string, nodeModel NodeModel) error {
-	// This function is called to add a node to the registry.
-	// You can implement the logic to handle the event here.
-	// For example, you might want to save the node model to a file or database.
+type NodeRegistry struct {
+	Nodes []NodeRegister `json:"nodes"`
+}
 
-	// Placeholder for actual implementation
+type NodeRegister struct {
+	Identifier   string                 `json:"identifier"`
+	Path         string                 `json:"path"`
+	InputSchema  map[string]interface{} `json:"input_schema"`
+	OutputSchema map[string]interface{} `json:"output_schema,omitempty"`
+}
+
+func AddToNodeRegistry(nodePath string, node Node) error {
+	data, err := os.ReadFile(i.GetGlobalConfig().BasePath + "/data/node.registry.json")
+	if err != nil {
+		log.Fatalf("Error finding node registry JSON: %s", err)
+	} else {
+		var registry NodeRegistry
+		if err := json.Unmarshal(data, &registry); err != nil {
+			log.Fatalf("Error unmarshalling node registry JSON: %s", err)
+		}
+		var exists bool = false
+		for _, n := range registry.Nodes {
+			if n.Identifier == node.Identifier {
+				exists = true
+			}
+		}
+		if exists != true {
+			registry.Nodes = append(registry.Nodes, NodeRegister{
+				Identifier:   node.Identifier,
+				Path:         node.Path,
+				InputSchema:  node.Model.ExecutionModel.InputSchema,
+				OutputSchema: node.Model.ExecutionModel.OutputSchema,
+			})
+		}
+	}
 	return nil
 }

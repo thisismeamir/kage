@@ -3,6 +3,7 @@
   "identifier": "string",
   "version": "string",
   "type": "graph",
+  "path": "string",
   "model": {
     "execution": {
       "policy": "string",

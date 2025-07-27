@@ -3,6 +3,7 @@
   "identifier": "string",
   "version": "string",
   "type": "map",
+  "path": "string",
   "model": {
     "input_schema": {},
     "output_schema": {}

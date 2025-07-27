@@ -1,4 +1,4 @@
-package atom
+package graph
 
 type ModulePath struct {
 	Path  string `json:"path"`

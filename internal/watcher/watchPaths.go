@@ -20,7 +20,7 @@ func WatchPaths(callback func(FileSystemEvent)) error {
 	for _, item := range localPaths {
 		paths = append(paths, item.Path)
 	}
-	log.Printf("Local Nodes Paths: %v", paths)
+	log.Printf("Local Paths: %v", paths)
 	watcher, err := NewWatcher(paths, callback)
 	if err != nil {
 		return err

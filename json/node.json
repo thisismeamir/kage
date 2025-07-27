@@ -1,0 +1,26 @@
+{
+  "name": "string",
+  "identifier": "string",
+  "version": "string",
+  "type": "node",
+  "model": {
+    "execution_model": {
+      "language": "string",
+      "input_schema":  {},
+      "output_schema": {}
+    },
+    "source": "string"
+  },
+  "metadata": {
+    "description": "string",
+    "authors": [
+      {
+        "name": "string",
+        "email": "string",
+        "url": "string"
+      }
+    ],
+    "manual": "string",
+    "repository": "string"
+  }
+}

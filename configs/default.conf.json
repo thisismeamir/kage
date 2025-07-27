@@ -21,10 +21,28 @@
       "base_url": "/api",
       "version": "v1"
     },
-    "database": {
-      "type": "sqlite",
-      "path": "./data/database.sqlite"
-    },
+    "database": [
+      {
+        "type": "json",
+        "name": "node_registry",
+        "path": "./data/node.registry.json"
+      },
+      {
+        "type": "json",
+        "name": "map_registry",
+        "path": "./data/map.registry.json"
+      },
+      {
+        "type": "json",
+        "name": "graph_registry",
+        "path": "./data/graph.registry.json"
+      },
+      {
+        "type": "folder",
+        "name": "source_registry",
+        "path": "./data/sources"
+      }
+    ],
     "logging": {
       "level": "info",
       "file": "./logs/kage.log"

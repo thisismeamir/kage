@@ -1,10 +1,13 @@
 package atom
 
+import "github.com/thisismeamir/kage/pkg/atom"
+
 type ModuleModel struct {
 	Model        ModuleMetadata     `json:"model"`
 	Execution    ModuleExecution    `json:"execution"`
 	Dependencies []ModuleDependency `json:"dependencies"`
 	Graph        []Vertices         `json:"graph"`
+	Attachments  []atom.AtomModel   `json:"attachments,omitempty"`
 }
 
 type ModuleMetadata struct {

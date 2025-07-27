@@ -94,5 +94,47 @@
 			"to": "name.atom",
 			"bond": "name.bond",
 		}
+	],
+	"attachments": [
+		{
+            "model": {
+               "name": "Atom Name",
+               "description": "A brief description of the atom",
+               "version": "1.0.0",
+               "identifier": "name.atom",
+               "author": "Author Name",
+               "author_email": "someone@somewhere.com"
+               "author_url": "https://example.com",
+               "manual": "https://example.com/manual",
+               "repository": "https://example.com/atom_source"
+            },
+            "execution_model": {
+                "language": "javascript",
+                "input_schema": {},
+                "output_schema": {},
+
+            },
+            source: [""]
+        },
+        {
+            "model": {
+               "name": "Atom Name",
+               "description": "A brief description of the atom",
+               "version": "1.0.0",
+               "identifier": "name.atom",
+               "author": "Author Name",
+               "author_email": "someone@somewhere.com"
+               "author_url": "https://example.com",
+               "manual": "https://example.com/manual",
+               "repository": "https://example.com/atom_source"
+            },
+            "execution_model": {
+                "language": "javascript",
+                "input_schema": {},
+                "output_schema": {},
+
+            },
+            source: [""]
+        }
 	]
 }

@@ -1,26 +1,26 @@
 package bootstrap
 
 import (
-	atom "github.com/thisismeamir/kage/pkg/atom"
-	module "github.com/thisismeamir/kage/pkg/module"
+	module "github.com/thisismeamir/kage/pkg/graph"
+	atom "github.com/thisismeamir/kage/pkg/node"
 )
 
 type Config struct {
 	Name        string              `json:"name"`
 	BasePath    string              `json:"base_path"`
 	ModulePaths []module.ModulePath `json:"module_paths"`
-	AtomPaths   []atom.AtomPath     `json:"atom_paths"`
+	AtomPaths   []atom.NodePath     `json:"atom_paths"`
 	Version     string              `json:"version"`
 	Server      ServerConfig        `json:"server"`
 	Client      ClientConfig        `json:"client"`
 }
 
 type ServerConfig struct {
-	Port     int            `json:"port"`
-	Host     string         `json:"host"`
-	Api      ApiConfig      `json:"api"`
-	Database DatabaseConfig `json:"database"`
-	Logging  LoggingConfig  `json:"logging"`
+	Port     int              `json:"port"`
+	Host     string           `json:"host"`
+	Api      ApiConfig        `json:"api"`
+	Database []DatabaseConfig `json:"database"`
+	Logging  LoggingConfig    `json:"logging"`
 }
 
 type ApiConfig struct {
@@ -30,6 +30,7 @@ type ApiConfig struct {
 
 type DatabaseConfig struct {
 	Type string `json:"type"`
+	Name string `json:"name"`
 	Path string `json:"path"`
 }
 

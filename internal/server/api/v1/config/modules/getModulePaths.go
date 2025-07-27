@@ -3,7 +3,7 @@ package modules
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/module"
+	"github.com/thisismeamir/kage/pkg/graph"
 )
 
 func GetModulePaths(c *gin.Context) {

@@ -3,10 +3,10 @@ package modules
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/module"
+	"github.com/thisismeamir/kage/pkg/graph"
 )
 
-// DeleteModulePathResponse is the response structure for removing an atom path.
+// DeleteModulePathResponse is the response structure for removing an node path.
 type DeleteModulePathResponse struct {
 	ModulePath string `json:"module_path"`
 	Deleted    bool   `json:"removed"`

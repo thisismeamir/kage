@@ -3,11 +3,11 @@ package atoms
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/atom"
+	"github.com/thisismeamir/kage/pkg/node"
 	"os"
 )
 
-// AddAtomPathResponse is the response structure for checking the existence and validity of an atom path.
+// AddAtomPathResponse is the response structure for checking the existence and validity of an node path.
 type AddAtomPathResponse struct {
 	AtomPath string `json:"atomPath"`
 	Added    bool   `json:"added"`
@@ -15,7 +15,7 @@ type AddAtomPathResponse struct {
 }
 
 func AddAtomPath(c *gin.Context) {
-	var req atom.AtomPath
+	var req node.NodePath
 
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
@@ -31,11 +31,11 @@ func AddAtomPath(c *gin.Context) {
 		// Check if the path is already in the config
 		for _, atomPath := range i.GetGlobalConfig().AtomPaths {
 			if atomPath.Path == req.Path {
-				c.JSON(200, gin.H{"error": "atom path already exists"})
+				c.JSON(200, gin.H{"error": "node path already exists"})
 				return
 			}
 		}
-		// Add the new atom path to the global config
+		// Add the new node path to the global config
 		i.SetGlobalConfig(i.Config{
 			Name:        i.GetGlobalConfig().Name,
 			BasePath:    i.GetGlobalConfig().BasePath,

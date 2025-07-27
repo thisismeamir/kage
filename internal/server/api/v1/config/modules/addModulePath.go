@@ -3,11 +3,11 @@ package modules
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/module"
+	"github.com/thisismeamir/kage/pkg/graph"
 	"os"
 )
 
-// AddModulePathResponse is the response structure for checking the existence and validity of an atom path.
+// AddModulePathResponse is the response structure for checking the existence and validity of an node path.
 type AddModulePathResponse struct {
 	ModulePath string `json:"module_path"`
 	Added      bool   `json:"added"`
@@ -35,7 +35,7 @@ func AddModulePath(c *gin.Context) {
 				return
 			}
 		}
-		// Add the new atom path to the global config
+		// Add the new node path to the global config
 		i.SetGlobalConfig(i.Config{
 			Name:        i.GetGlobalConfig().Name,
 			BasePath:    i.GetGlobalConfig().BasePath,

@@ -1,11 +1,11 @@
 package execution
 
 import (
-	atom "github.com/thisismeamir/kage/pkg/atom"
 	"github.com/thisismeamir/kage/pkg/execution/handlers"
+	atom "github.com/thisismeamir/kage/pkg/node"
 )
 
-var LanguageHandlerMap = map[string]atom.AtomRunHandler{
+var LanguageHandlerMap = map[string]atom.RunHandler{
 	"python":     &handlers.PythonHandler{},
 	"go":         &handlers.GoHandler{},
 	"bash":       &handlers.BashHandler{},

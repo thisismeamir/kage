@@ -6,9 +6,9 @@ import (
 	"github.com/thisismeamir/kage/pkg/node"
 )
 
-// DeleteAtomPathResponse is the response structure for removing an node path.
-type DeleteAtomPathResponse struct {
-	AtomPath string `json:"atomPath"`
+// DeleteNodePathResponse is the response structure for removing an node path.
+type DeleteNodePathResponse struct {
+	NodePath string `json:"node_path"`
 	Deleted  bool   `json:"removed"`
 	Message  string `json:"message,omitempty" jsonschema:"omitempty" jsonschema_extras:"description=Message about the removal status"`
 }
@@ -20,12 +20,12 @@ func DeleteAtomPath(c *gin.Context) {
 		return
 	}
 
-	atomPaths := i.GetGlobalConfig().AtomPaths
-	newAtomPaths := []node.NodePath{}
+	nodePaths := i.GetGlobalConfig().NodePaths
+	newNodePaths := []node.NodePath{}
 	deleted := false
-	for _, atomPath := range atomPaths {
+	for _, atomPath := range nodePaths {
 		if atomPath.Path != req.Path {
-			newAtomPaths = append(newAtomPaths, atomPath)
+			newNodePaths = append(newNodePaths, atomPath)
 		} else {
 			deleted = true
 		}
@@ -33,13 +33,13 @@ func DeleteAtomPath(c *gin.Context) {
 
 	if deleted {
 		cfg := i.GetGlobalConfig()
-		cfg.AtomPaths = newAtomPaths
+		cfg.NodePaths = newNodePaths
 		i.SetGlobalConfig(cfg)
 		i.SaveConfigFile()
-		resp := DeleteAtomPathResponse{
-			AtomPath: req.Path,
+		resp := DeleteNodePathResponse{
+			NodePath: req.Path,
 			Deleted:  true,
-			Message:  "Atom path deleted successfully.",
+			Message:  "Node path deleted successfully.",
 		}
 		c.JSON(200, resp)
 	} else {
@@ -54,7 +54,7 @@ func deleteModulePath(c *gin.Context) {
 		return
 	}
 
-	atomPaths := i.GetGlobalConfig().AtomPaths
+	atomPaths := i.GetGlobalConfig().NodePaths
 	newAtomPaths := []node.NodePath{}
 	deleted := false
 	for _, atomPath := range atomPaths {
@@ -67,13 +67,13 @@ func deleteModulePath(c *gin.Context) {
 
 	if deleted {
 		cfg := i.GetGlobalConfig()
-		cfg.AtomPaths = newAtomPaths
+		cfg.NodePaths = newAtomPaths
 		i.SetGlobalConfig(cfg)
 		i.SaveConfigFile()
-		resp := DeleteAtomPathResponse{
-			AtomPath: req.Path,
+		resp := DeleteNodePathResponse{
+			NodePath: req.Path,
 			Deleted:  true,
-			Message:  "Atom path deleted successfully.",
+			Message:  "Node path deleted successfully.",
 		}
 		c.JSON(200, resp)
 	} else {

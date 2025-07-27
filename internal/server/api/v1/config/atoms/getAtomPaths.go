@@ -7,7 +7,7 @@ import (
 )
 
 func GetAtomPaths(c *gin.Context) {
-	resp := i.GetGlobalConfig().AtomPaths
+	resp := i.GetGlobalConfig().NodePaths
 	if resp == nil {
 		resp = []node.NodePath{}
 		c.JSON(200, resp)

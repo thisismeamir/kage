@@ -3,7 +3,7 @@ package modules
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/graph"
+	. "github.com/thisismeamir/kage/pkg/graph"
 )
 
 // DeleteModulePathResponse is the response structure for removing an node path.
@@ -14,14 +14,14 @@ type DeleteModulePathResponse struct {
 }
 
 func DeleteModulePath(c *gin.Context) {
-	var req atom.ModulePath
+	var req GraphPath
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
 		return
 	}
 
-	modulePaths := i.GetGlobalConfig().ModulePaths
-	newModulePaths := []atom.ModulePath{}
+	modulePaths := i.GetGlobalConfig().GraphPaths
+	newModulePaths := []GraphPath{}
 	deleted := false
 	for _, modulePath := range modulePaths {
 		if modulePath.Path != req.Path {
@@ -33,7 +33,7 @@ func DeleteModulePath(c *gin.Context) {
 
 	if deleted {
 		cfg := i.GetGlobalConfig()
-		cfg.ModulePaths = newModulePaths
+		cfg.GraphPaths = newModulePaths
 		i.SetGlobalConfig(cfg)
 		i.SaveConfigFile()
 		resp := DeleteModulePathResponse{

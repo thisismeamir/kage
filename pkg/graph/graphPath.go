@@ -1,6 +1,6 @@
 package graph
 
-type ModulePath struct {
+type GraphPath struct {
 	Path  string `json:"path"`
 	Local bool   `json:"local"`
 }

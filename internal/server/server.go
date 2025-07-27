@@ -49,7 +49,7 @@ func New() *Server {
 		api.GET("/config", configAPI.GetConfiguration)
 		// Atom Paths
 		api.GET("/config/atoms", configAtoms.GetAtomPaths)      // Get all node paths
-		api.POST("/config/atoms", configAtoms.AddAtomPath)      // Add a new node path
+		api.POST("/config/atoms", configAtoms.AddNodePath)      // Add a new node path
 		api.DELETE("/config/atoms", configAtoms.DeleteAtomPath) // Add a new node path
 		// Module Paths
 		api.GET("/config/modules", configModules.GetModulePaths)      // Get all node paths

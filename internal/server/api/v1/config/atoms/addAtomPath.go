@@ -7,14 +7,14 @@ import (
 	"os"
 )
 
-// AddAtomPathResponse is the response structure for checking the existence and validity of an node path.
-type AddAtomPathResponse struct {
+// AddNodePathResponse is the response structure for checking the existence and validity of an node path.
+type AddNodePathResponse struct {
 	AtomPath string `json:"atomPath"`
 	Added    bool   `json:"added"`
 	Message  string `json:"message"`
 }
 
-func AddAtomPath(c *gin.Context) {
+func AddNodePath(c *gin.Context) {
 	var req node.NodePath
 
 	if err := c.BindJSON(&req); err != nil {
@@ -29,7 +29,7 @@ func AddAtomPath(c *gin.Context) {
 			return
 		}
 		// Check if the path is already in the config
-		for _, atomPath := range i.GetGlobalConfig().AtomPaths {
+		for _, atomPath := range i.GetGlobalConfig().NodePaths {
 			if atomPath.Path == req.Path {
 				c.JSON(200, gin.H{"error": "node path already exists"})
 				return
@@ -37,20 +37,20 @@ func AddAtomPath(c *gin.Context) {
 		}
 		// Add the new node path to the global config
 		i.SetGlobalConfig(i.Config{
-			Name:        i.GetGlobalConfig().Name,
-			BasePath:    i.GetGlobalConfig().BasePath,
-			ModulePaths: i.GetGlobalConfig().ModulePaths,
-			AtomPaths:   append(i.GetGlobalConfig().AtomPaths, req),
-			Version:     i.GetGlobalConfig().Version,
-			Server:      i.GetGlobalConfig().Server,
-			Client:      i.GetGlobalConfig().Client,
+			Name:       i.GetGlobalConfig().Name,
+			BasePath:   i.GetGlobalConfig().BasePath,
+			GraphPaths: i.GetGlobalConfig().GraphPaths,
+			NodePaths:  append(i.GetGlobalConfig().NodePaths, req),
+			Version:    i.GetGlobalConfig().Version,
+			Server:     i.GetGlobalConfig().Server,
+			Client:     i.GetGlobalConfig().Client,
 		})
 
 		i.SaveConfigFile()
 
 	}
 	// Example response (replace with your logic)
-	resp := AddAtomPathResponse{
+	resp := AddNodePathResponse{
 		AtomPath: req.Path,
 		Added:    true,
 		Message:  "Atom path added successfully.",

@@ -1,18 +1,18 @@
 package bootstrap
 
 import (
-	module "github.com/thisismeamir/kage/pkg/graph"
-	atom "github.com/thisismeamir/kage/pkg/node"
+	. "github.com/thisismeamir/kage/pkg/graph"
+	. "github.com/thisismeamir/kage/pkg/node"
 )
 
 type Config struct {
-	Name        string              `json:"name"`
-	BasePath    string              `json:"base_path"`
-	ModulePaths []module.ModulePath `json:"module_paths"`
-	AtomPaths   []atom.NodePath     `json:"atom_paths"`
-	Version     string              `json:"version"`
-	Server      ServerConfig        `json:"server"`
-	Client      ClientConfig        `json:"client"`
+	Name       string       `json:"name"`
+	BasePath   string       `json:"base_path"`
+	GraphPaths []GraphPath  `json:"graph_paths"`
+	NodePaths  []NodePath   `json:"node_paths"`
+	Version    string       `json:"version"`
+	Server     ServerConfig `json:"server"`
+	Client     ClientConfig `json:"client"`
 }
 
 type ServerConfig struct {
@@ -40,7 +40,7 @@ type LoggingConfig struct {
 }
 
 type ClientConfig struct {
-	Web WebConfig `jsong:"web"`
+	Web WebConfig `json:"web"`
 }
 
 type WebConfig struct {

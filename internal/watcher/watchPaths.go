@@ -9,7 +9,7 @@ import (
 func WatchPaths(callback func(FileSystemEvent)) error {
 	var localPaths []node.NodePath
 
-	for _, path := range i.GetGlobalConfig().AtomPaths {
+	for _, path := range i.GetGlobalConfig().NodePaths {
 		if path.Local {
 			localPaths = append(localPaths, path)
 		}
@@ -20,7 +20,7 @@ func WatchPaths(callback func(FileSystemEvent)) error {
 	for _, item := range localPaths {
 		paths = append(paths, item.Path)
 	}
-	log.Printf("Local Atom Paths: %v", paths)
+	log.Printf("Local Nodes Paths: %v", paths)
 	watcher, err := NewWatcher(paths, callback)
 	if err != nil {
 		return err

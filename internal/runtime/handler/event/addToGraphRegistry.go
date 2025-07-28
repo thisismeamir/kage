@@ -17,7 +17,7 @@ type GraphRegister struct {
 	Path       string `json:"path"`
 }
 
-func AddToGraphRegistry(graphPath string, graph Graph) {
+func AddToGraphRegistry(graph Graph) {
 	data, err := os.ReadFile(i.GetGlobalConfig().BasePath + "/data/graph.registry.json")
 	if err != nil {
 		log.Fatalf("Error finding graphs registry JSON: %s", err)
@@ -30,7 +30,7 @@ func AddToGraphRegistry(graphPath string, graph Graph) {
 		for _, m := range registry.Graphs {
 			if m.Identifier == graph.Identifier {
 				exists = true
-				log.Printf("[Warning] Map with identifier %s already exists in the registry, skipping addition.", graph.Identifier)
+				log.Printf("[Warning]: Map with identifier %s already exists in the registry, skipping addition.", graph.Identifier)
 			}
 		}
 		if exists != true {
@@ -38,6 +38,14 @@ func AddToGraphRegistry(graphPath string, graph Graph) {
 				Identifier: graph.Identifier,
 				Path:       graph.Path,
 			})
+			newData, err := json.MarshalIndent(registry, "", "  ")
+			if err != nil {
+				log.Printf("[ERROR]: error marshalling updated map registry JSON: %w", err)
+			}
+
+			if err := os.WriteFile(i.GetGlobalConfig().BasePath+"/data/map.registry.json", newData, 0644); err != nil {
+				log.Printf("[ERROR]: writing updated map registry JSON: %w", err)
+			}
 		}
 	}
 }

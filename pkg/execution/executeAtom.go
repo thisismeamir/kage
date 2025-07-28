@@ -12,5 +12,5 @@ func ExecuteAtom(atom node.NodeModel, input map[string]interface{}) (map[string]
 	if !ok {
 		return nil, fmt.Errorf("no handler for language: %s", atom.ExecutionModel.Language)
 	}
-	return handler.Run(atom.ExecutionModel.Source, input)
+	return handler.Run(atom.Source, input)
 }

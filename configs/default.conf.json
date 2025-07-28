@@ -13,6 +13,12 @@
       "local": true
     }
   ],
+  "map_paths": [
+    {
+      "path": "/home/kid-a/kage/maps",
+      "local": true
+    }
+  ],
   "version": "1.0.0",
   "server": {
     "port": 8080,
@@ -21,31 +27,10 @@
       "base_url": "/api",
       "version": "v1"
     },
-    "database": [
-      {
-        "type": "json",
-        "name": "node_registry",
-        "path": "./data/node.registry.json"
-      },
-      {
-        "type": "json",
-        "name": "map_registry",
-        "path": "./data/map.registry.json"
-      },
-      {
-        "type": "json",
-        "name": "graph_registry",
-        "path": "./data/graph.registry.json"
-      },
-      {
-        "type": "folder",
-        "name": "source_registry",
-        "path": "./data/sources"
-      }
-    ],
+    "database": [],
     "logging": {
       "level": "info",
-      "file": "./logs/kage.log"
+      "file": "$BasePath/logs/kage.log"
     }
   },
   "client": {

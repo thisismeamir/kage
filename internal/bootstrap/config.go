@@ -1,15 +1,15 @@
 package bootstrap
 
 import (
-	. "github.com/thisismeamir/kage/pkg/graph"
-	. "github.com/thisismeamir/kage/pkg/node"
+	. "github.com/thisismeamir/kage/pkg/form"
 )
 
 type Config struct {
 	Name       string       `json:"name"`
 	BasePath   string       `json:"base_path"`
-	GraphPaths []GraphPath  `json:"graph_paths"`
-	NodePaths  []NodePath   `json:"node_paths"`
+	GraphPaths []FormPath   `json:"graph_paths"`
+	NodePaths  []FormPath   `json:"node_paths"`
+	MapPaths   []FormPath   `json:"map_paths"`
 	Version    string       `json:"version"`
 	Server     ServerConfig `json:"server"`
 	Client     ClientConfig `json:"client"`

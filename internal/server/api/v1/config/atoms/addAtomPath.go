@@ -3,7 +3,7 @@ package atoms
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/node"
+	"github.com/thisismeamir/kage/pkg/form"
 	"os"
 )
 
@@ -15,7 +15,7 @@ type AddNodePathResponse struct {
 }
 
 func AddNodePath(c *gin.Context) {
-	var req node.NodePath
+	var req form.FormPath
 
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})

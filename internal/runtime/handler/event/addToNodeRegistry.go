@@ -19,7 +19,7 @@ type NodeRegister struct {
 	OutputSchema map[string]interface{} `json:"output_schema,omitempty"`
 }
 
-func AddToNodeRegistry(nodePath string, node Node) error {
+func AddToNodeRegistry(node Node) {
 	data, err := os.ReadFile(i.GetGlobalConfig().BasePath + "/data/node.registry.json")
 	if err != nil {
 		log.Fatalf("Error finding node registry JSON: %s", err)
@@ -41,7 +41,14 @@ func AddToNodeRegistry(nodePath string, node Node) error {
 				InputSchema:  node.Model.ExecutionModel.InputSchema,
 				OutputSchema: node.Model.ExecutionModel.OutputSchema,
 			})
+			newData, err := json.MarshalIndent(registry, "", "  ")
+			if err != nil {
+				log.Printf("error marshalling updated map registry JSON: %w", err)
+			}
+
+			if err := os.WriteFile(i.GetGlobalConfig().BasePath+"/data/map.registry.json", newData, 0644); err != nil {
+				log.Printf("error writing updated map registry JSON: %w", err)
+			}
 		}
 	}
-	return nil
 }

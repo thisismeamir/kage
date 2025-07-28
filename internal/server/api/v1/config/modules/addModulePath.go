@@ -3,7 +3,7 @@ package modules
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	. "github.com/thisismeamir/kage/pkg/graph"
+	"github.com/thisismeamir/kage/pkg/form"
 	"os"
 )
 
@@ -15,7 +15,7 @@ type AddModulePathResponse struct {
 }
 
 func AddModulePath(c *gin.Context) {
-	var req GraphPath
+	var req form.FormPath
 
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})

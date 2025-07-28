@@ -2,19 +2,28 @@ package watcher
 
 import (
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/node"
+	"github.com/thisismeamir/kage/pkg/form"
 	"log"
 )
 
 func WatchPaths(callback func(FileSystemEvent)) error {
-	var localPaths []node.NodePath
+	var localPaths []form.FormPath
 
 	for _, path := range i.GetGlobalConfig().NodePaths {
 		if path.Local {
 			localPaths = append(localPaths, path)
 		}
 	}
-
+	for _, path := range i.GetGlobalConfig().GraphPaths {
+		if path.Local {
+			localPaths = append(localPaths, path)
+		}
+	}
+	for _, path := range i.GetGlobalConfig().MapPaths {
+		if path.Local {
+			localPaths = append(localPaths, path)
+		}
+	}
 	// Map localPaths to their Path property
 	var paths []string
 	for _, item := range localPaths {

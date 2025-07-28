@@ -19,7 +19,7 @@ type MapRegister struct {
 	OutputSchema map[string]interface{} `json:"output_schema"`
 }
 
-func AddToMapRegister(mapPath string, mapping Map) {
+func AddToMapRegister(mapping Map) {
 	data, err := os.ReadFile(i.GetGlobalConfig().BasePath + "/data/map.registry.json")
 	if err != nil {
 		log.Fatalf("Error finding map registry JSON: %s", err)
@@ -42,6 +42,14 @@ func AddToMapRegister(mapPath string, mapping Map) {
 				InputSchema:  mapping.Model.InputSchema,
 				OutputSchema: mapping.Model.OutputSchema,
 			})
+			newData, err := json.MarshalIndent(registry, "", "  ")
+			if err != nil {
+				log.Printf("error marshalling updated map registry JSON: %w", err)
+			}
+
+			if err := os.WriteFile(i.GetGlobalConfig().BasePath+"/data/map.registry.json", newData, 0644); err != nil {
+				log.Printf("error writing updated map registry JSON: %w", err)
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ package atoms
 import (
 	"github.com/gin-gonic/gin"
 	i "github.com/thisismeamir/kage/internal/bootstrap"
-	"github.com/thisismeamir/kage/pkg/node"
+	"github.com/thisismeamir/kage/pkg/form"
 )
 
 // DeleteNodePathResponse is the response structure for removing an node path.
@@ -14,14 +14,14 @@ type DeleteNodePathResponse struct {
 }
 
 func DeleteAtomPath(c *gin.Context) {
-	var req node.NodePath
+	var req form.FormPath
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
 		return
 	}
 
 	nodePaths := i.GetGlobalConfig().NodePaths
-	newNodePaths := []node.NodePath{}
+	newNodePaths := []form.FormPath{}
 	deleted := false
 	for _, atomPath := range nodePaths {
 		if atomPath.Path != req.Path {
@@ -48,14 +48,14 @@ func DeleteAtomPath(c *gin.Context) {
 }
 
 func deleteModulePath(c *gin.Context) {
-	var req node.NodePath
+	var req form.FormPath
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(400, gin.H{"error": "invalid request"})
 		return
 	}
 
 	atomPaths := i.GetGlobalConfig().NodePaths
-	newAtomPaths := []node.NodePath{}
+	newAtomPaths := []form.FormPath{}
 	deleted := false
 	for _, atomPath := range atomPaths {
 		if atomPath.Path != req.Path {

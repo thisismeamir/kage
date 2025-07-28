@@ -4,20 +4,22 @@ import (
 	"github.com/fsnotify/fsnotify"
 	. "github.com/thisismeamir/kage/internal/runtime/handler/file"
 	. "github.com/thisismeamir/kage/internal/watcher"
+	. "github.com/thisismeamir/kage/pkg/node"
 	"log"
 )
 
-func FileAddedEvent(event FileSystemEvent, formType string) {
+func FormFileWatcherEvents(event FileSystemEvent, formType string) {
 	switch formType {
 	case "node":
 		switch event.Event {
 		case fsnotify.Create:
 			log.Println("Node Created/Updated:", event.Path)
 			node, err := LoadForm(event.Path)
+
 			if err != nil {
 				log.Fatal("Error loading node:", err)
 			} else {
-				log.Println("Node:", node)
+				AddToNodeRegistry(node.(Node))
 			}
 		case fsnotify.Remove:
 			log.Println("Node Removed:", event.Path)

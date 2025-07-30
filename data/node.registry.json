@@ -1,3 +1,59 @@
 {
-  "nodes": []
+  "nodes": [
+    {
+      "identifier": "node_001",
+      "path": "/nodes/basic",
+      "input_schema": {
+        "input1": "string",
+        "input2": "integer"
+      },
+      "output_schema": {
+        "output1": "boolean"
+      }
+    },
+    {
+      "identifier": "node_002",
+      "path": "/nodes/advanced",
+      "input_schema": {
+        "inputA": "string",
+        "inputB": "float"
+      },
+      "output_schema": {
+        "outputA": "object"
+      }
+    },
+    {
+      "identifier": "node_003",
+      "path": "/nodes/data-processor",
+      "input_schema": {
+        "config": "object",
+        "data": "array"
+      },
+      "output_schema": {
+        "result": "object"
+      }
+    },
+    {
+      "identifier": "node_004",
+      "path": "/nodes/logger",
+      "input_schema": {
+        "log_level": "string",
+        "message": "string"
+      },
+      "output_schema": {
+        "status": "boolean"
+      }
+    },
+    {
+      "identifier": "node_005",
+      "path": "/nodes/encryption",
+      "input_schema": {
+        "key": "string",
+        "plain_text": "string"
+      },
+      "output_schema": {
+        "cipher_text": "string"
+      }
+    }
+  ]
 }

@@ -1,3 +1,16 @@
 {
-  "graphs": []
+  "graphs": [
+    {
+      "identifier": "graph_001",
+      "path": "/graphs/simple"
+    },
+    {
+      "identifier": "graph_002",
+      "path": "/graphs/complex"
+    },
+    {
+      "identifier": "graph_003",
+      "path": "/graphs/workflow"
+    }
+  ]
 }

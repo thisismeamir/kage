@@ -2,7 +2,7 @@ package modules
 
 import (
 	"github.com/gin-gonic/gin"
-	i "github.com/thisismeamir/kage/internal/bootstrap"
+	"github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/form"
 	"os"
 )
@@ -29,24 +29,24 @@ func AddModulePath(c *gin.Context) {
 			return
 		}
 		// Check if the path is already in the config
-		for _, modulePath := range i.GetGlobalConfig().GraphPaths {
+		for _, modulePath := range config.GetGlobalConfig().GraphPaths {
 			if modulePath.Path == req.Path {
 				c.JSON(200, gin.H{"error": "Module path already exists"})
 				return
 			}
 		}
 		// Add the new node path to the global config
-		i.SetGlobalConfig(i.Config{
-			Name:       i.GetGlobalConfig().Name,
-			BasePath:   i.GetGlobalConfig().BasePath,
-			GraphPaths: append(i.GetGlobalConfig().GraphPaths, req),
-			NodePaths:  i.GetGlobalConfig().NodePaths,
-			Version:    i.GetGlobalConfig().Version,
-			Server:     i.GetGlobalConfig().Server,
-			Client:     i.GetGlobalConfig().Client,
+		config.SetGlobalConfig(config.Config{
+			Name:       config.GetGlobalConfig().Name,
+			BasePath:   config.GetGlobalConfig().BasePath,
+			GraphPaths: append(config.GetGlobalConfig().GraphPaths, req),
+			NodePaths:  config.GetGlobalConfig().NodePaths,
+			Version:    config.GetGlobalConfig().Version,
+			Server:     config.GetGlobalConfig().Server,
+			Client:     config.GetGlobalConfig().Client,
 		})
 
-		i.SaveConfigFile()
+		config.SaveConfigFile()
 
 	}
 	// Example response (replace with your logic)

@@ -2,7 +2,7 @@ package atoms
 
 import (
 	"github.com/gin-gonic/gin"
-	i "github.com/thisismeamir/kage/internal/bootstrap"
+	i "github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/form"
 )
 

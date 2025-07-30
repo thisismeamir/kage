@@ -28,3 +28,21 @@ func LoadNode(nodePath string) (*Node, error) {
 	}
 
 }
+
+func (node Node) Save(path string) error {
+	nodePath := path + node.Identifier + ".json"
+	data, err := json.MarshalIndent(node, "", "  ")
+	if err != nil {
+		log.Printf("[ERROR] Save failed to marshal JSON: %s", err)
+		return err
+	} else {
+		if err := os.WriteFile(nodePath, data, 0644); err != nil {
+			log.Printf("[ERROR] Save failed to write file: %s", err)
+			return err
+		} else {
+			log.Printf("[INFO] Node: %s saved successfully at %s", node.Identifier, path)
+			return nil
+		}
+	}
+
+}

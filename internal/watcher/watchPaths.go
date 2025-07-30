@@ -1,7 +1,7 @@
 package watcher
 
 import (
-	i "github.com/thisismeamir/kage/internal/bootstrap"
+	i "github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/form"
 	"log"
 )

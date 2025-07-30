@@ -1,4 +1,4 @@
-package bootstrap
+package config
 
 import (
 	. "github.com/thisismeamir/kage/pkg/form"

@@ -1,9 +1,7 @@
 {
   "name": "string",
-  "identifier": "string",
   "version": "string",
   "type": "node",
-  "path": "string",
   "model": {
     "execution_model": {
       "language": "string",

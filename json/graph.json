@@ -1,9 +1,7 @@
 {
   "name": "string",
-  "identifier": "string",
   "version": "string",
   "type": "graph",
-  "path": "string",
   "model": {
     "execution": {
       "policy": "string",
@@ -58,28 +56,7 @@
         "vertices": [
           {
             "to_id": "int",
-            "map": {
-              "name": "string",
-              "identifier": "string",
-              "version": "string",
-              "type": "map",
-              "model": {
-                "input_schema": {},
-                "output_schema": {}
-              },
-              "metadata": {
-                "description": "string",
-                "authors": [
-                  {
-                    "name": "string",
-                    "email": "string",
-                    "url": "string"
-                  }
-                ],
-                "manual": "string",
-                "repository": "string"
-              }
-            }
+            "map_identifier": "string"
           }
         ]
       }

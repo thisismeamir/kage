@@ -1,9 +1,7 @@
 {
   "name": "string",
-  "identifier": "string",
   "version": "string",
   "type": "string",
-  "path": "string",
   "model": {},
   "metadata": {
     "description": "string",

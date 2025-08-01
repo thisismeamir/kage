@@ -2,7 +2,6 @@ package registry
 
 import (
 	"encoding/json"
-	i "github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/graph"
 	"log"
 	"os"
@@ -32,8 +31,7 @@ func LoadGraphRegistry(registryPath string) (GraphRegistry, error) {
 	}
 }
 
-func (registry GraphRegistry) SaveGraphRegistry() GraphRegistry {
-	registryPath := i.GetGlobalConfig().BasePath + "/data/graph.registry.json"
+func (registry GraphRegistry) SaveGraphRegistry(registryPath string) GraphRegistry {
 	data, err := json.Marshal(registry)
 	if err != nil {
 		log.Fatalf("[FATAL] Error marshalling graph registry JSON: %s", err)

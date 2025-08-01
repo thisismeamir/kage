@@ -2,7 +2,6 @@ package registry
 
 import (
 	"encoding/json"
-	i "github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/node"
 	"log"
 	"os"
@@ -34,8 +33,7 @@ func LoadNodeRegistry(registryPath string) (NodeRegistry, error) {
 	}
 }
 
-func (registry NodeRegistry) SaveNodeRegistry() NodeRegistry {
-	registryPath := i.GetGlobalConfig().BasePath + "/data/node.registry.json"
+func (registry NodeRegistry) SaveNodeRegistry(registryPath string) NodeRegistry {
 	data, err := json.Marshal(registry)
 	if err != nil {
 		log.Fatalf("[FATAL] Error marshalling node registry JSON: %s", err)

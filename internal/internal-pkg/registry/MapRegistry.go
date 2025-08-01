@@ -2,7 +2,6 @@ package registry
 
 import (
 	"encoding/json"
-	i "github.com/thisismeamir/kage/internal/bootstrap/config"
 	"github.com/thisismeamir/kage/pkg/mapping"
 	"log"
 	"os"
@@ -34,8 +33,7 @@ func LoadMapRegistry(registryPath string) (MapRegistry, error) {
 	}
 }
 
-func (registry MapRegistry) SaveMapRegistry() MapRegistry {
-	registryPath := i.GetGlobalConfig().BasePath + "/data/map.registry.json"
+func (registry MapRegistry) SaveMapRegistry(registryPath string) MapRegistry {
 	data, err := json.MarshalIndent(registry, "", "  ")
 	if err != nil {
 		log.Fatalf("[FATAL] Could not save map registry JSON: %s", err)

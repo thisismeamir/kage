@@ -2,8 +2,9 @@ package node
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/thisismeamir/kage/pkg/form"
-	"log"
+	"io/ioutil"
 	"os"
 )
 
@@ -13,36 +14,41 @@ type Node struct {
 	Metadata form.Metadata `json:"metadata"`
 }
 
-func LoadNode(nodePath string) (*Node, error) {
-	node := &Node{}
-	data, err := os.ReadFile(nodePath)
+// LoadNode loads a Node from a JSON file and validates it.
+func LoadNode(path string) (*Node, error) {
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatalf("[ERROR] LoadNode failed to read file: %s", err)
 		return nil, err
-	} else {
-		if err := json.Unmarshal(data, node); err != nil {
-			log.Fatalf("[ERROR] LoadNode failed to unmarshal JSON: %s", err)
-			return nil, err
-		}
-		return node, nil
 	}
-
+	if err := ValidateNodeJSON(data); err != nil {
+		return nil, err
+	}
+	var n Node
+	if err := json.Unmarshal(data, &n); err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
-func (node Node) Save(path string) error {
-	nodePath := path + node.Identifier + ".json"
-	data, err := json.MarshalIndent(node, "", "  ")
+// SaveNode validates the Node and saves it as JSON to a file.
+func SaveNode(n *Node, path string) error {
+	data, err := json.MarshalIndent(n, "", "  ")
 	if err != nil {
-		log.Printf("[ERROR] Save failed to marshal JSON: %s", err)
 		return err
-	} else {
-		if err := os.WriteFile(nodePath, data, 0644); err != nil {
-			log.Printf("[ERROR] Save failed to write file: %s", err)
-			return err
-		} else {
-			log.Printf("[INFO] Node: %s saved successfully at %s", node.Identifier, path)
-			return nil
-		}
 	}
+	return os.WriteFile(path, data, 0644)
+}
 
+// ValidateNodeJSON checks if the JSON is a valid node type.
+func ValidateNodeJSON(data []byte) error {
+	var temp struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+	if temp.Type != "node" {
+		return errors.New("invalid type: not a node")
+	}
+	return nil
 }

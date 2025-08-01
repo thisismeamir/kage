@@ -30,17 +30,16 @@ func LoadMap(mapPath string) (*Map, error) {
 }
 
 func (mapp Map) Save(path string) error {
-	nodePath := path + mapp.Identifier + ".json"
 	data, err := json.MarshalIndent(mapp, "", "  ")
 	if err != nil {
 		log.Printf("[ERROR] Save failed to marshal JSON: %s", err)
 		return err
 	} else {
-		if err := os.WriteFile(nodePath, data, 0644); err != nil {
+		if err := os.WriteFile(path, data, 0644); err != nil {
 			log.Printf("[ERROR] Save failed to write file: %s", err)
 			return err
 		} else {
-			log.Printf("[INFO] Map: %s saved successfully at %s", mapp.Identifier, path)
+			log.Printf("[INFO] Map: %s saved successfully at %s", mapp.Name, path)
 			return nil
 		}
 	}

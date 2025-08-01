@@ -15,16 +15,16 @@ type Graph struct {
 	Metadata form.Metadata `json:"metadata"`
 }
 
-func LoadGraph(graphPath string) (Graph, error) {
-	graph := Graph{}
+func LoadGraph(graphPath string) (*Graph, error) {
+	var graph *Graph
 	data, err := os.ReadFile(graphPath)
 	if err != nil {
 		log.Fatalf("[ERROR] LoadGraph failed to read file: %s", err)
-		return Graph{}, err
+		return nil, err
 	} else {
-		if err := json.Unmarshal(data, graph); err != nil {
+		if err := json.Unmarshal(data, &graph); err != nil {
 			log.Fatalf("[ERROR] LoadGraph failed to unmarshal JSON: %s", err)
-			return Graph{}, err
+			return nil, err
 		}
 		return graph, nil
 	}
@@ -33,10 +33,10 @@ func LoadGraph(graphPath string) (Graph, error) {
 func (graph Graph) SaveGraph(path string) error {
 	data, err := json.MarshalIndent(graph, "", "  ")
 	if err != nil {
-		log.Printf("[ERROR] SaveGraph failed to save %s in marshal JSON %s: %s", graph.Identifier, path, err)
+		log.Printf("[ERROR] SaveGraph failed to save %s in marshal JSON %s: %s", graph.Name, path, err)
 		return err
 	} else if err := os.WriteFile(path, data, 0644); err != nil {
-		log.Printf("[ERROR] SaveGraph failed to save %s in path %s: %s", graph.Identifier, path, err)
+		log.Printf("[ERROR] SaveGraph failed to save %s in path %s: %s", graph.Name, path, err)
 		return err
 	}
 	return nil
@@ -69,12 +69,12 @@ func (graph Graph) RemoveFromGraph(identifier string) Graph {
 		make([]mapping.Map, 0),
 	}
 	for _, existingNode := range graph.Model.Attachments.GraphNodes {
-		if existingNode.Identifier != identifier {
+		if existingNode.Name != identifier {
 			newGraphAttachments.GraphNodes = append(newGraphAttachments.GraphNodes, existingNode)
 		}
 	}
 	for _, existingMap := range graph.Model.Attachments.GraphMaps {
-		if existingMap.Identifier != identifier {
+		if existingMap.Name != identifier {
 			newGraphAttachments.GraphMaps = append(newGraphAttachments.GraphMaps, existingMap)
 		}
 	}

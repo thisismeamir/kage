@@ -1,12 +1,13 @@
 package config
 
 type Config struct {
-	Name     string       `json:"name"`
-	BasePath string       `json:"base_path"`
-	Paths    []string     `json:"paths"`
-	Version  string       `json:"version"`
-	Server   ServerConfig `json:"server"`
-	Client   ClientConfig `json:"client"`
+	Name     string        `json:"name"`
+	BasePath string        `json:"base_path"`
+	Paths    []string      `json:"paths"`
+	Version  string        `json:"version"`
+	Logging  LoggingConfig `json:"logging"`
+	Server   ServerConfig  `json:"server"`
+	Client   ClientConfig  `json:"client"`
 }
 
 type ServerConfig struct {
@@ -14,7 +15,6 @@ type ServerConfig struct {
 	Host     string           `json:"host"`
 	Api      ApiConfig        `json:"api"`
 	Database []DatabaseConfig `json:"database"`
-	Logging  LoggingConfig    `json:"logging"`
 }
 
 type ApiConfig struct {

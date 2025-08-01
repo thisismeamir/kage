@@ -1,0 +1,21 @@
+{
+  "name": "string",
+  "version": "string",
+  "type": "map",
+  "model": {
+    "input_schema": {},
+    "output_schema": {}
+  },
+  "metadata": {
+    "description": "string",
+    "authors": [
+      {
+        "name": "string",
+        "email": "string",
+        "url": "string"
+      }
+    ],
+    "manual": "string",
+    "repository": "string"
+  }
+}

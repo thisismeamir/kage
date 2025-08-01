@@ -1,0 +1,18 @@
+{
+  "name": "string",
+  "version": "string",
+  "type": "string",
+  "model": {},
+  "metadata": {
+    "description": "string",
+    "authors": [
+      {
+        "name": "string",
+        "email": "string",
+        "url": "string"
+      }
+    ],
+    "manual": "string",
+    "repository": "string"
+  }
+}

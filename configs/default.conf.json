@@ -1,19 +1,12 @@
 {
   "name": "Kage for Kid A",
-  "base_path": "",
-  "module_paths": [
-    {
-      "path": "./modules",
-      "local": true
-    }
-  ],
-  "atom_paths": [
-    {
-      "path": "./atoms",
-      "local": true
-    }
-  ],
+  "base_path": "/home/kid-a/sandbox/kage",
+  "paths": ["/home/kid-a/kage"],
   "version": "1.0.0",
+  "logging": {
+    "level": "info",
+    "file": "/logs/kage.log"
+  },
   "server": {
     "port": 8080,
     "host": "localhost",
@@ -21,14 +14,7 @@
       "base_url": "/api",
       "version": "v1"
     },
-    "database": {
-      "type": "sqlite",
-      "path": "./data/database.sqlite"
-    },
-    "logging": {
-      "level": "info",
-      "file": "./logs/kage.log"
-    }
+    "database": []
   },
   "client": {
     "Web": {

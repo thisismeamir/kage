@@ -1,12 +1,6 @@
 package server
 
 import (
-	"fmt"
-	i "github.com/thisismeamir/kage/internal/bootstrap"
-	configAPI "github.com/thisismeamir/kage/internal/server/api/v1/config"
-	configAtoms "github.com/thisismeamir/kage/internal/server/api/v1/config/atoms"
-	configModules "github.com/thisismeamir/kage/internal/server/api/v1/config/modules"
-
 	"log"
 	"time"
 
@@ -21,14 +15,13 @@ type Server struct {
 	router *gin.Engine
 }
 
-func New() *Server {
+func New(client string) *Server {
 	router := gin.Default()
 
-	addr := fmt.Sprintf("http://%s:%d", i.GetGlobalConfig().Client.Web.Host, i.GetGlobalConfig().Client.Web.Port)
-	log.Println("Answering CORS requests from:", addr)
+	log.Println("Answering CORS requests from:", client)
 	// Add CORS middleware
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{addr, "*"}, // Next.js dev server
+		AllowOrigins:     []string{client, "*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -36,7 +29,7 @@ func New() *Server {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	//// Serve embedded Next.js static files
+	//// Serve embedded Next.js static file
 	//router.StaticFS("/static", http.FS(staticFiles))
 	//router.GET("/", func(c *gin.Context) {
 	//	c.FileFromFS("web/out/index.html", http.FS(staticFiles))
@@ -46,15 +39,8 @@ func New() *Server {
 	api := router.Group("/api/v1")
 	{
 		// Get configuration file
-		api.GET("/config", configAPI.GetConfiguration)
-		// Atom Paths
-		api.GET("/config/atoms", configAtoms.GetAtomPaths)      // Get all atom paths
-		api.POST("/config/atoms", configAtoms.AddAtomPath)      // Add a new atom path
-		api.DELETE("/config/atoms", configAtoms.DeleteAtomPath) // Add a new atom path
-		// Module Paths
-		api.GET("/config/modules", configModules.GetModulePaths)      // Get all atom paths
-		api.POST("/config/modules", configModules.AddModulePath)      // Add a new atom path
-		api.DELETE("/config/modules", configModules.DeleteModulePath) // Add a new atom path
+		api.GET("/stat", Stat)
+
 	}
 
 	return &Server{router: router}
@@ -62,4 +48,8 @@ func New() *Server {
 
 func (s *Server) Start(addr string) error {
 	return s.router.Run(addr)
+}
+
+func Stat(c *gin.Context) {
+
 }

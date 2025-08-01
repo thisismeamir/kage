@@ -1,10 +1,17 @@
-====================
-▗▖ ▗▖ ▗▄▖  ▗▄▄▖▗▄▄▄▖
-▐▌▗▞▘▐▌ ▐▌▐▌   ▐▌
-▐▛▚▖ ▐▛▀▜▌▐▌▝▜▌▐▛▀▀▘
-▐▌ ▐▌▐▌ ▐▌▝▚▄▞▘▐▙▄▄▖
---------------------
-Kernel of Autonomous
-Graph-based Execution
+ ___  __     ________   ________   _______
+|\  \|\  \  |\   __  \ |\   ____\ |\  ___ \
+\ \  \/  /|_\ \  \|\  \\ \  \___| \ \   __/|
+ \ \   ___  \\ \   __  \\ \  \  ___\ \  \_|/__
+  \ \  \\ \  \\ \  \ \  \\ \  \|\  \\ \  \_|\ \
+   \ \__\\ \__\\ \__\ \__\\ \_______\\ \_______\
+    \|__| \|__| \|__|\|__| \|_______| \|_______|
+-------------------------------------------------
+Kernel of Autonomous Graph-based Execution
+Version: 0.0.1 (development phase)
 Github: https://github.com/thisismeamir/kage
-====================
+-------------------------------------------------
+[IMPORTANT] This product is currently under heavy development,
+and is not suitable to be running seriously.
+If you want to help please check out the github repository,
+open an issue or pr.
+-------------------------------------------------

@@ -1,18 +1,12 @@
 package config
 
-import (
-	. "github.com/thisismeamir/kage/pkg/form"
-)
-
 type Config struct {
-	Name       string       `json:"name"`
-	BasePath   string       `json:"base_path"`
-	GraphPaths []FormPath   `json:"graph_paths"`
-	NodePaths  []FormPath   `json:"node_paths"`
-	MapPaths   []FormPath   `json:"map_paths"`
-	Version    string       `json:"version"`
-	Server     ServerConfig `json:"server"`
-	Client     ClientConfig `json:"client"`
+	Name     string       `json:"name"`
+	BasePath string       `json:"base_path"`
+	Paths    []string     `json:"paths"`
+	Version  string       `json:"version"`
+	Server   ServerConfig `json:"server"`
+	Client   ClientConfig `json:"client"`
 }
 
 type ServerConfig struct {

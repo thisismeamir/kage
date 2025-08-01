@@ -54,15 +54,15 @@ func LoadConfiguration(path string) (Config, error) {
 	if cfg.Server.Api.Version == "" {
 		cfg.Server.Api.Version = "v1"
 	}
-	if cfg.Server.Logging.Level == "" {
-		cfg.Server.Logging.Level = "info"
+	if cfg.Logging.Level == "" {
+		cfg.Logging.Level = "info"
 	}
 	// Expand $BasePath
-	if cfg.Server.Logging.File == "" {
-		cfg.Server.Logging.File = filepath.Join(cfg.BasePath, "logs/kage.log")
+	if cfg.Logging.File == "" {
+		cfg.Logging.File = filepath.Join(cfg.BasePath, "logs/kage.log")
 	} else {
-		cfg.Server.Logging.File = strings.ReplaceAll(
-			cfg.Server.Logging.File,
+		cfg.Logging.File = strings.ReplaceAll(
+			cfg.Logging.File,
 			"$BasePath", cfg.BasePath,
 		)
 	}

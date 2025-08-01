@@ -25,6 +25,8 @@ func InitializeRegistries(paths []string, registryPath string) error {
 			MapRegistry:   make([]registry.MapRegister, 0),
 		}
 	}
+	// Zeroth step: before we start adding, let's remove registers that are not available anymore:
+	reg.CleanMissingFiles()
 	// First we find all the json files in the paths that's been set in config file:
 	files := FindAllJsons(paths)
 	// For each json file we do the following:

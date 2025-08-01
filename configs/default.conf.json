@@ -1,24 +1,7 @@
 {
   "name": "Kage for Kid A",
-  "base_path": "/home/kid-a/projects/kage",
-  "graph_paths": [
-    {
-      "path": "/home/kid-a/kage/graphs",
-      "local": true
-    }
-  ],
-  "node_paths": [
-    {
-      "path": "/home/kid-a/kage/nodes",
-      "local": true
-    }
-  ],
-  "map_paths": [
-    {
-      "path": "/home/kid-a/kage/maps",
-      "local": true
-    }
-  ],
+  "base_path": "/home/kid-a/sandbox/kage",
+  "paths": ["/home/kid-a/kage"],
   "version": "1.0.0",
   "server": {
     "port": 8080,

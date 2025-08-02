@@ -53,7 +53,7 @@ func (graph Graph) AddMapToGraph(mapp mapping.Map) Graph {
 }
 
 func (graph Graph) AddGraphObject(object GraphObject) Graph {
-	graph.Model.GraphStructure = append(graph.Model.GraphStructure, object)
+	graph.Model.Structure = append(graph.Model.Structure, object)
 	return graph
 }
 
@@ -86,7 +86,7 @@ func (graph Graph) RemoveFromGraph(identifier string) Graph {
 	newModel := GraphModel{
 		graph.Model.Execution,
 		newGraphDependencies,
-		graph.Model.GraphStructure,
+		graph.Model.Structure,
 		newGraphAttachments,
 	}
 	newGraph := Graph{
@@ -95,4 +95,34 @@ func (graph Graph) RemoveFromGraph(identifier string) Graph {
 		graph.Metadata,
 	}
 	return newGraph
+}
+
+// CheckGraphDependencies Checking Graph internal Dependency and returning identifiers that are not inside graph
+func (graph Graph) CheckGraphDependencies() []string {
+	invalidIdentifiers := make([]string, 0)
+	for _, dependency := range graph.Model.Dependencies {
+		found := false
+		if dependency.Type == "node" {
+			for _, internalNodeDependency := range graph.Model.Attachments.GraphNodes {
+				if internalNodeDependency.Name == dependency.Identifier {
+					found = true
+				}
+			}
+			if !found {
+				invalidIdentifiers = append(invalidIdentifiers, dependency.Identifier)
+			}
+		} else if dependency.Type == "map" {
+			for _, internalMapDependency := range graph.Model.Attachments.GraphMaps {
+				if internalMapDependency.Name == dependency.Identifier {
+					found = true
+				}
+			}
+			if !found {
+				invalidIdentifiers = append(invalidIdentifiers, dependency.Identifier)
+			}
+		} else {
+			log.Printf("[ERROR] CheckGraphDependencies found unknown type %s for identifier %s", dependency.Type, dependency.Identifier)
+		}
+	}
+	return invalidIdentifiers
 }

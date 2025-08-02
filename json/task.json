@@ -1,0 +1,35 @@
+{
+  "id": "string",
+  "nodeIdentifier": "string",
+  "input": {},
+  "output": {},
+  "priority": "number",
+  "urgency": "low | medium | high | critical",
+  "status": "pending | queued | running | completed | failed | cancelled",
+  "createdAt": "string",
+  "updatedAt": "string",
+  "startedAt": "string",
+  "completedAt": "string",
+  "duration": "string",
+  "dependsOn": ["string"],
+  "bottlenecks": ["string"],
+  "retryCount": "number",
+  "maxRetries": "number",
+  "error": {
+    "code": "string",
+    "message": "string",
+    "stack": "string"
+  },
+  "execution": {
+    "workingDirectory": "string",
+    "processId": "string",
+    "exitCode": "number",
+    "stdout": "string",
+    "stderr": "string"
+  },
+  "resources": {
+    "memoryLimit": "string",
+    "timeoutDuration": "string",
+    "cpuLimit": "string"
+  }
+}

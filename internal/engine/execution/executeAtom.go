@@ -7,7 +7,7 @@ import (
 	"github.com/thisismeamir/kage/pkg/node"
 )
 
-func ExecuteAtom(atom node.NodeModel, input map[string]interface{}) (map[string]interface{}, error) {
+func ExecuteTask(atom node.NodeModel, input map[string]interface{}) (map[string]interface{}, error) {
 	handler, ok := LanguageHandlerMap[strings.ToLower(atom.ExecutionModel.Language)]
 	if !ok {
 		return nil, fmt.Errorf("no handler for language: %s", atom.ExecutionModel.Language)

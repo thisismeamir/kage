@@ -1,7 +1,7 @@
 package execution
 
 import (
-	"github.com/thisismeamir/kage/pkg/execution/handlers"
+	"github.com/thisismeamir/kage/internal/engine/execution/handlers"
 	atom "github.com/thisismeamir/kage/pkg/node"
 )
 

@@ -1,7 +1,8 @@
 package graph
 
 type GraphObject struct {
-	Id             int           `json:"id"`
-	NodeIdentifier string        `json:"node_identifier"`
-	Vertices       []GraphVertex `json:"vertices"`
+	Id                  int    `json:"id"`
+	Type                string `json:"type"`
+	ExecutionIdentifier string `json:"execution_identifier"`
+	Outgoing            []int  `json:"outgoing,omitempty"`
 }

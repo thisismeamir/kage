@@ -6,9 +6,14 @@
     "execution_model": {
       "language": "string",
       "input_schema":  {},
-      "output_schema": {}
+      "output_schema": {},
+      "artifacts": ["string"]
     },
-    "source": "string"
+    "source": "string",
+    "working_directory": "string",
+    "entry_file": "string",
+    "output_directory": "string",
+    "artifacts": ["string"]
   },
   "metadata": {
     "description": "string",

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/thisismeamir/kage/internal/bootstrap/init_methods"
+	"github.com/thisismeamir/kage/internal/server"
 	"github.com/thisismeamir/kage/internal/watcher"
 	"log"
 	"os"
@@ -76,11 +77,11 @@ func main() {
 	//	go func() {
 	//		_ = watcher.Start()
 	//	}()
-	//}
+	// }
 	//Start the server
-	//log.Println("Starting Server in", serverAddr)
-	//srv := server.New(clientAddr)
-	//if err := srv.Start(serverAddr); err != nil {
-	//	log.Fatal("Failed to start server:", err)
-	//}
+	log.Println("Starting Server in", serverAddr)
+	srv := server.New(clientAddr)
+	if err := srv.Start(serverAddr); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }

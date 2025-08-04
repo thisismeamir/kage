@@ -4,16 +4,17 @@
   "type": "node",
   "model": {
     "execution_model": {
-      "language": "string",
+      "language": {
+        "name": "string",
+        "executable_path": "string"
+      },
       "input_schema":  {},
-      "output_schema": {},
-      "artifacts": ["string"]
+      "output_schema": {}
     },
     "source": "string",
     "working_directory": "string",
     "entry_file": "string",
-    "output_directory": "string",
-    "artifacts": ["string"]
+    "output_directory": "string"
   },
   "metadata": {
     "description": "string",

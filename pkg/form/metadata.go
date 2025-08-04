@@ -1,8 +1,8 @@
 package form
 
 type Metadata struct {
-	Description string   `json:"description"`
-	Authors     []Author `json:"authors"`
-	Manual      string   `json:"manual"`
-	Repository  string   `json:"repository"`
+	Description string   `json:"description,omitempty"`
+	Authors     []Author `json:"authors,omitempty"`
+	Manual      string   `json:"manual,omitempty"`
+	Repository  string   `json:"repository,omitempty"`
 }

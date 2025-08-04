@@ -4,5 +4,5 @@ type Form struct {
 	Name     string   `json:"name"`
 	Version  string   `json:"version"`
 	Type     string   `json:"type"`
-	Metadata Metadata `json:"metadata"`
+	Metadata Metadata `json:"metadata,omitempty"`
 }

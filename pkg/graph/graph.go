@@ -2,9 +2,9 @@ package graph
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/thisismeamir/kage/pkg/form"
-	"github.com/thisismeamir/kage/pkg/mapping"
-	"github.com/thisismeamir/kage/pkg/node"
 	"log"
 	"os"
 )
@@ -15,16 +15,16 @@ type Graph struct {
 	Metadata form.Metadata `json:"metadata"`
 }
 
-func LoadGraph(graphPath string) (*Graph, error) {
-	var graph *Graph
+func LoadGraph(graphPath string) (Graph, error) {
+	var graph Graph
 	data, err := os.ReadFile(graphPath)
 	if err != nil {
 		log.Fatalf("[ERROR] LoadGraph failed to read file: %s", err)
-		return nil, err
+		return Graph{}, err
 	} else {
 		if err := json.Unmarshal(data, &graph); err != nil {
 			log.Fatalf("[ERROR] LoadGraph failed to unmarshal JSON: %s", err)
-			return nil, err
+			return Graph{}, err
 		}
 		return graph, nil
 	}
@@ -42,87 +42,14 @@ func (graph Graph) SaveGraph(path string) error {
 	return nil
 }
 
-func (graph Graph) AddNodeToGraph(node node.Node) Graph {
-	graph.Model.Attachments.GraphNodes = append(graph.Model.Attachments.GraphNodes, node)
-	return graph
-}
-
-func (graph Graph) AddMapToGraph(mapp mapping.Map) Graph {
-	graph.Model.Attachments.GraphMaps = append(graph.Model.Attachments.GraphMaps, mapp)
-	return graph
-}
-
-func (graph Graph) AddGraphObject(object GraphObject) Graph {
-	graph.Model.Structure = append(graph.Model.Structure, object)
-	return graph
-}
-
-func (graph Graph) AddDependency(dep GraphDependency) Graph {
-	graph.Model.Dependencies = append(graph.Model.Dependencies, dep)
-	return graph
-}
-
-func (graph Graph) RemoveFromGraph(identifier string) Graph {
-	newGraphDependencies := make([]GraphDependency, 0)
-	newGraphAttachments := GraphAttachments{
-		make([]node.Node, 0),
-		make([]mapping.Map, 0),
-	}
-	for _, existingNode := range graph.Model.Attachments.GraphNodes {
-		if existingNode.Name != identifier {
-			newGraphAttachments.GraphNodes = append(newGraphAttachments.GraphNodes, existingNode)
+func (graph Graph) GetObject(id int) (*GraphObject, error) {
+	for _, obj := range graph.Model.Structure {
+		if obj.Id == id {
+			log.Printf("[INFO] Found object with ID %d: %+v", id, obj)
+			return &obj, nil
 		}
 	}
-	for _, existingMap := range graph.Model.Attachments.GraphMaps {
-		if existingMap.Name != identifier {
-			newGraphAttachments.GraphMaps = append(newGraphAttachments.GraphMaps, existingMap)
-		}
-	}
-	for _, dependency := range graph.Model.Dependencies {
-		if dependency.Identifier != identifier {
-			newGraphDependencies = append(newGraphDependencies, dependency)
-		}
-	}
-	newModel := GraphModel{
-		graph.Model.Execution,
-		newGraphDependencies,
-		graph.Model.Structure,
-		newGraphAttachments,
-	}
-	newGraph := Graph{
-		graph.Form,
-		newModel,
-		graph.Metadata,
-	}
-	return newGraph
-}
+	log.Printf("[ERROR] No object found with ID %d", id)
+	return nil, errors.New(fmt.Sprintf("No graph with id: %i", id))
 
-// CheckGraphDependencies Checking Graph internal Dependency and returning identifiers that are not inside graph
-func (graph Graph) CheckGraphDependencies() []string {
-	invalidIdentifiers := make([]string, 0)
-	for _, dependency := range graph.Model.Dependencies {
-		found := false
-		if dependency.Type == "node" {
-			for _, internalNodeDependency := range graph.Model.Attachments.GraphNodes {
-				if internalNodeDependency.Name == dependency.Identifier {
-					found = true
-				}
-			}
-			if !found {
-				invalidIdentifiers = append(invalidIdentifiers, dependency.Identifier)
-			}
-		} else if dependency.Type == "map" {
-			for _, internalMapDependency := range graph.Model.Attachments.GraphMaps {
-				if internalMapDependency.Name == dependency.Identifier {
-					found = true
-				}
-			}
-			if !found {
-				invalidIdentifiers = append(invalidIdentifiers, dependency.Identifier)
-			}
-		} else {
-			log.Printf("[ERROR] CheckGraphDependencies found unknown type %s for identifier %s", dependency.Type, dependency.Identifier)
-		}
-	}
-	return invalidIdentifiers
 }

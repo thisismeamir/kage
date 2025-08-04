@@ -7,7 +7,7 @@ import (
 )
 
 type Flow struct {
-	Identifier      string                 `json:identifier,omitempty"`
+	Identifier      string                 `json:"identifier,omitempty"`
 	RespectiveGraph string                 `json:"respective_graph"`
 	RespectiveEvent string                 `json:"respective_event"`
 	Tasks           []TaskRegister         `json:"tasks"`

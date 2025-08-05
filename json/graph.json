@@ -39,82 +39,14 @@
         }
       }
     },
-    "dependencies": [
-      {
-        "type": "string",
-        "identifier": "string"
-      },
-      {
-        "type": "string",
-        "identifier": "string"
-      }
-    ],
-    "graph_structure": [
+    "structure": [
       {
         "id": "int",
-        "node_identifier": "string",
-        "vertices": [
-          {
-            "to_id": "int",
-            "map_identifier": "string"
-          }
-        ]
+        "type": "string",
+        "execution_identifier": "string",
+        "outgoingId": [ ]
       }
-    ],
-    "attachments": {
-      "graph_nodes": [
-        {
-          "name": "string",
-          "identifier": "string",
-          "version": "string",
-          "type": "node",
-          "model": {
-            "execution_model": {
-              "language": "string",
-              "input_schema": {},
-              "output_schema": {}
-            },
-            "source": "string"
-          },
-          "metadata": {
-            "description": "string",
-            "authors": [
-              {
-                "name": "string",
-                "email": "string",
-                "url": "string"
-              }
-            ],
-            "manual": "string",
-            "repository": "string"
-          }
-        }
-      ],
-      "graph_maps": [
-        {
-          "name": "string",
-          "identifier": "string",
-          "version": "string",
-          "type": "map",
-          "model": {
-            "input_schema": {},
-            "output_schema": {}
-          },
-          "metadata": {
-            "description": "string",
-            "authors": [
-              {
-                "name": "string",
-                "email": "string",
-                "url": "string"
-              }
-            ],
-            "manual": "string",
-            "repository": "string"
-          }
-        }
-      ]
-    }
+    ]
   },
   "metadata": {
     "description": "string",

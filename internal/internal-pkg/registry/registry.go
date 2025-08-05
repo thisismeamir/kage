@@ -2,6 +2,7 @@ package registry
 
 import (
 	"encoding/json"
+	"github.com/thisismeamir/kage/pkg/graph"
 	"github.com/thisismeamir/kage/pkg/mapping"
 	"github.com/thisismeamir/kage/pkg/node"
 	"log"
@@ -167,4 +168,83 @@ func (registry *Registry) CleanMissingFiles() {
 			registry.RemoveGraph(g.Identifier, g.Path)
 		}
 	}
+}
+
+func (registry *Registry) Clean() {
+	registry.CleanMissingFiles()
+	registry.Save("registry.json")
+	log.Println("[INFO] Registry cleaned and saved.")
+}
+
+func (registry *Registry) LoadNode(identifier string) (*node.Node, error) {
+	var err error
+	var no *node.Node
+	for _, n := range registry.NodeRegistry {
+		if n.Identifier == identifier {
+			no, err = node.LoadNode(n.Path)
+			if err != nil {
+				log.Printf("[ERROR] Could not load node %s: %v", identifier, err)
+				return nil, err
+			} else {
+				break
+			}
+		}
+	}
+	log.Printf("[INFO] Node %s loaded successfully.", identifier)
+	return no, nil
+}
+
+func (registry *Registry) LoadMap(identifier string) (*mapping.Map, error) {
+	var err error
+	var ma *mapping.Map
+	for _, m := range registry.MapRegistry {
+		if m.Identifier == identifier {
+			ma, err = mapping.LoadMap(m.Path)
+			if err != nil {
+				log.Printf("[ERROR] Could not load map %s: %v", identifier, err)
+				return nil, err
+			} else {
+				break
+			}
+		}
+	}
+	log.Printf("[INFO] Map %s loaded successfully.", identifier)
+	return ma, nil
+}
+
+func (registry *Registry) LoadGraph(identifier string) (graph.Graph, error) {
+	var err error
+	var gr graph.Graph
+	for _, g := range registry.GraphRegistry {
+		if g.Identifier == identifier {
+			gr, err = graph.LoadGraph(g.Path)
+			if err != nil {
+				log.Printf("[ERROR] Could not load graph %s: %v", identifier, err)
+				return graph.Graph{}, err
+			} else {
+				break
+			}
+		}
+	}
+	log.Printf("[INFO] Graph %s loaded successfully.", identifier)
+	return gr, nil
+}
+
+func (registry *Registry) GetPath(identifier string) string {
+	for _, n := range registry.NodeRegistry {
+		if n.Identifier == identifier {
+			return n.Path
+		}
+	}
+	for _, m := range registry.MapRegistry {
+		if m.Identifier == identifier {
+			return m.Path
+		}
+	}
+	for _, g := range registry.GraphRegistry {
+		if g.Identifier == identifier {
+			return g.Path
+		}
+	}
+	return ""
 }

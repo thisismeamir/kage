@@ -4,11 +4,17 @@
   "type": "node",
   "model": {
     "execution_model": {
-      "language": "string",
+      "language": {
+        "name": "string",
+        "executable_path": "string"
+      },
       "input_schema":  {},
       "output_schema": {}
     },
-    "source": "string"
+    "source": "string",
+    "working_directory": "string",
+    "entry_file": "string",
+    "output_directory": "string"
   },
   "metadata": {
     "description": "string",

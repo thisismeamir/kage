@@ -4,25 +4,32 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/thisismeamir/kage/internal/bootstrap/init_methods"
-	"github.com/thisismeamir/kage/internal/server"
+	"github.com/thisismeamir/kage/internal/engine/scheduler"
+	"github.com/thisismeamir/kage/internal/internal-pkg/config"
+	"github.com/thisismeamir/kage/internal/internal-pkg/event"
+	"github.com/thisismeamir/kage/internal/internal-pkg/registry"
 	"github.com/thisismeamir/kage/internal/watcher"
 	"log"
 	"os"
+	"time"
 )
 
 var serverAddr string
 var clientAddr string
 var api string
+var reg *registry.Registry
+var conf config.Config
 
 func init() {
 	// ASCII ART FOR RUNNING THE PROGRAM IN CLI.
 	art, _ := os.ReadFile("./util/asci-art")
 	fmt.Println(string(art))
 	// Loading Configuration
-	config, err := init_methods.LoadConfiguration("/home/kid-a/projects/kage/configs/default.conf.json")
+	var err error
+	conf, err = init_methods.LoadConfiguration("/home/kid-a/projects/kage/configs/default.conf.json")
 	if err == nil {
 		// Setting up (making sure) paths inside the base path, e.g. data, logs, cache, tmp, etc.
-		err := init_methods.SetupBasePath(config)
+		err := init_methods.SetupBasePath(conf)
 		if err != nil {
 			log.Fatalf("[FATAL] Unable to set up base path, and directories. %s", err)
 		}
@@ -30,10 +37,13 @@ func init() {
 		log.Fatalf("[FATAL] Unable to load configuration. %s", err)
 	}
 
+	// Initialize the registry
+	//reg, err = registry.LoadRegistry(config.BasePath + "/data/registry.json")
+
 	// Watch for changes in config.Paths and update registry on change
-	w, err := watcher.NewWatcher(config.Paths, func(event watcher.FileSystemEvent) {
+	w, err := watcher.NewWatcher(conf.Paths, func(event watcher.FileSystemEvent) {
 		if event.Event == fsnotify.Create || event.Event == fsnotify.Remove {
-			initRegErr := init_methods.InitializeRegistries(config.Paths, config.BasePath+"/data/registry.json")
+			initRegErr := init_methods.InitializeRegistries(conf.Paths, conf.BasePath+"/data/registry.json")
 			if initRegErr != nil {
 				log.Printf("Failed to update registry: %v", initRegErr)
 			} else {
@@ -50,38 +60,38 @@ func init() {
 	}
 
 	// setting up global values:
-	serverAddr = fmt.Sprintf("%s:%d", config.Server.Host, config.Server.Port)
-	clientAddr = fmt.Sprintf("http://%s:%d", config.Client.Web.Host, config.Client.Web.Port)
+	serverAddr = fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
+	clientAddr = fmt.Sprintf("http://%s:%d", conf.Client.Web.Host, conf.Client.Web.Port)
 
 	println(clientAddr)
-	api = fmt.Sprintf("%s/%s", config.Server.Api.BaseUrl, config.Server.Api.Version)
+	api = fmt.Sprintf("%s/%s", conf.Server.Api.BaseUrl, conf.Server.Api.Version)
 	// initializing logger
-	init_methods.InitializeLogger(config.BasePath + config.Logging.File)
+	init_methods.InitializeLogger(conf.BasePath + conf.Logging.File)
 
 	// registry initializer
-	initRegErr := init_methods.InitializeRegistries(config.Paths, config.BasePath+"/data/registry.json")
-	if initRegErr != nil {
-		log.Fatalf("[FATAL] Unable to initialize registries. %s", initRegErr)
+	regg := init_methods.InitializeRegistries(conf.Paths, conf.BasePath+"/data/registry.json")
+	if regg != nil {
+		log.Fatalf("[FATAL] Unable to initialize registries. %s", regg)
 	}
+	endArt, _ := os.ReadFile("./util/main-banner")
+	fmt.Println("\n" + string(endArt))
 }
 
 func main() {
+	reg, _ = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
 
-	// Initialization Function:
-	//init_methods := config2.LoadConfiguration(config2.GetConfigPath())
-	//config2.SetGlobalConfig(init_methods)
-	//
-	//serverAddr, init_methods, watchers := i.InitKage()
-	//
-	//for _, watcher := range watchers {
-	//	go func() {
-	//		_ = watcher.Start()
-	//	}()
-	//}
-	//Start the server
-	log.Println("Starting Server in", serverAddr)
-	srv := server.New(clientAddr)
-	if err := srv.Start(serverAddr); err != nil {
-		log.Fatal("Failed to start server:", err)
+	e := event.Event{
+		Graph:   "Sample-Graph.0.0.1.graph",
+		Date:    time.Now().Format("2006-01-02-15-04-05"),
+		Urgency: 2,
 	}
+	e = e.GenerateIdentifier()
+	f := scheduler.Scheduler(e, *reg, conf)
+	log.Printf("Scheduler initialized with event: %v\n", f)
+	////Start the server
+	//log.Println("Starting Server in", serverAddr)
+	//srv := server.New(clientAddr)
+	//if err := srv.Start(serverAddr); err != nil {
+	//	log.Fatal("Failed to start server:", err)
+	//}
 }

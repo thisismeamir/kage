@@ -25,17 +25,15 @@ func InitializeRegistries(paths []string, registryPath string) error {
 			MapRegistry:   make([]registry.MapRegister, 0),
 		}
 	}
-	// Zeroth step: before we start adding, let's remove registers that are not available anymore:
-	reg.CleanMissingFiles()
 	// First we find all the json files in the paths that's been set in config file:
 	files := FindAllJsons(paths)
-	// For each json file we do the following:
+	//// For each json file we do the following:
 	for _, file := range files {
 		// setting a pointer that would hold the value of the json "type" key if in existence.
-		var jsonType *string
+		var jsonType string
 		jsonType = GetTypeOfJson(file)
 		// Going case by case with jsonType value:
-		switch *jsonType {
+		switch jsonType {
 		// If it is a node:
 		case "node":
 			// First we load the node to make sure it's loadable and fine.
@@ -77,7 +75,7 @@ func InitializeRegistries(paths []string, registryPath string) error {
 			if err != nil {
 				log.Println("Error loading graph: ", err)
 			} else {
-				newGraphIdentifier := GenerateGraphIdentifier(*newGraph)
+				newGraphIdentifier := GenerateGraphIdentifier(newGraph)
 				if reg.Contains(newGraphIdentifier, file) {
 					log.Printf("Graph %s already exists in registry with path: %s", newGraphIdentifier, file)
 				} else {
@@ -85,7 +83,8 @@ func InitializeRegistries(paths []string, registryPath string) error {
 				}
 			}
 		default:
-			log.Println("Unsupported json type: ", *jsonType)
+			continue
+			//log.Println("Unsupported json type: ", jsonType)
 		}
 	}
 	fmt.Println("Registry initialization complete ")
@@ -114,30 +113,29 @@ func FindAllJsons(paths []string) []string {
 		}
 	}
 	log.Printf("Found %d files", len(files))
-	log.Printf("files: %s", files)
 	return files
 }
 
-func GetTypeOfJson(path string) *string {
+func GetTypeOfJson(path string) string {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		log.Printf("Error reading %s: %v", path, err)
-		return nil
+		return ""
 	}
 
 	var jsonObject map[string]interface{}
 	err = json.Unmarshal(data, &jsonObject)
 	if err != nil {
 		log.Printf("Error parsing %s: %v", path, err)
-		return nil
+		return ""
 	}
 
 	if val, exists := jsonObject["type"]; exists {
 		strVal := fmt.Sprintf("%v", val)
-		return &strVal
+		return strVal
 	}
 
-	return nil
+	return ""
 }
 
 func GenerateNodeIdentifier(n node.Node) string {

@@ -5,9 +5,11 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/thisismeamir/kage/internal/bootstrap/init_methods"
 	"github.com/thisismeamir/kage/internal/engine/scheduler"
+	task_manager "github.com/thisismeamir/kage/internal/engine/task-manager"
 	"github.com/thisismeamir/kage/internal/internal-pkg/config"
 	"github.com/thisismeamir/kage/internal/internal-pkg/event"
 	"github.com/thisismeamir/kage/internal/internal-pkg/registry"
+	"github.com/thisismeamir/kage/internal/server"
 	"github.com/thisismeamir/kage/internal/watcher"
 	"log"
 	"os"
@@ -58,6 +60,20 @@ func init() {
 	if err := w.Start(); err != nil {
 		log.Fatalf("[FATAL] Watcher failed to start: %v", err)
 	}
+	// Watcher for Task Manager to know about changes in flows directory
+	w2, err := watcher.NewWatcher([]string{conf.BasePath + "/tmp/flows"}, func(event watcher.FileSystemEvent) {
+		if event.Event == fsnotify.Create || event.Event == fsnotify.Remove {
+			log.Println("[INFO] Task Manager detected a change in flows directory, re-initializing Task Manager.")
+			task_manager.InitializeTaskManager(conf)
+		}
+
+	})
+	if err != nil {
+		log.Fatalf("[FATAL] Unable to start watcher: %v", err)
+	}
+	if err := w2.Start(); err != nil {
+		log.Fatalf("[FATAL] Watcher failed to start: %v", err)
+	}
 
 	// setting up global values:
 	serverAddr = fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
@@ -80,6 +96,9 @@ func init() {
 func main() {
 	reg, _ = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
 
+	tm := task_manager.InitializeTaskManager(conf)
+	fmt.Printf("%v ", tm)
+
 	e := event.Event{
 		Graph:   "Sample-Graph.0.0.1.graph",
 		Date:    time.Now().Format("2006-01-02-15-04-05"),
@@ -88,10 +107,10 @@ func main() {
 	e = e.GenerateIdentifier()
 	f := scheduler.Scheduler(e, *reg, conf)
 	log.Printf("Scheduler initialized with event: %v\n", f)
-	////Start the server
-	//log.Println("Starting Server in", serverAddr)
-	//srv := server.New(clientAddr)
-	//if err := srv.Start(serverAddr); err != nil {
-	//	log.Fatal("Failed to start server:", err)
-	//}
+	//Start the server
+	log.Println("Starting Server in", serverAddr)
+	srv := server.New(clientAddr)
+	if err := srv.Start(serverAddr); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }

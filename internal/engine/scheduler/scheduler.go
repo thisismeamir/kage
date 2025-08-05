@@ -21,8 +21,8 @@ func Scheduler(e event.Event, r registry.Registry, c config.Config) flow.Flow {
 		InitialInput:    e.InitialInput,
 	}
 	f = f.GenerateIdentifier()
-	flowPath := c.BasePath + "/tmp/" + e.Identifier
-	_ = os.Mkdir(flowPath, os.ModePerm)
+	flowPath := c.BasePath + "/tmp/" + "flows/" + e.Identifier
+	_ = os.MkdirAll(flowPath, os.ModePerm)
 	_ = os.Mkdir(flowPath+"/tasks", os.ModePerm)
 	graph, err := r.LoadGraph(e.Graph)
 	if err != nil {

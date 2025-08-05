@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/thisismeamir/kage/pkg/form"
+	"github.com/thisismeamir/kage/util"
 	"log"
 	"os"
 )
@@ -52,4 +53,18 @@ func (graph Graph) GetObject(id int) (*GraphObject, error) {
 	log.Printf("[ERROR] No object found with ID %d", id)
 	return nil, errors.New(fmt.Sprintf("No graph with id: %i", id))
 
+}
+
+func (graph Graph) GetLength() int {
+	return len(graph.Model.Structure)
+}
+
+func (graph Graph) GetDependency(id int) []int {
+	var dependencies []int
+	for _, m := range graph.Model.Structure {
+		if id != m.Id && util.IntInList(id, m.Outgoing) {
+			dependencies = append(dependencies, m.Id)
+		}
+	}
+	return dependencies
 }

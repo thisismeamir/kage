@@ -8,6 +8,7 @@ import (
 
 type Flow struct {
 	Identifier      string                 `json:"identifier,omitempty"`
+	Type            string                 `json:"type"`
 	RespectiveGraph string                 `json:"respective_graph"`
 	RespectiveEvent string                 `json:"respective_event"`
 	Tasks           []TaskRegister         `json:"tasks"`
@@ -18,8 +19,11 @@ type Flow struct {
 
 type TaskRegister struct {
 	Id          string `json:"id"`
+	Type        string `json:"type"`
+	GraphId     int    `json:"graph_id"`
 	Queue       int    `json:"queue"`
 	Level       int    `json:"level"`
+	Urgency     int    `json:"urgency"`
 	ResourceTag int    `json:"resource_tag,omitempty"`
 	Status      int    `json:"status"`
 }
@@ -38,4 +42,30 @@ func (fl Flow) Save(path string) {
 	} else {
 		log.Printf("Flow saved successfully: %s", fl.Identifier)
 	}
+}
+
+func LoadFlow(path string) Flow {
+	var fl Flow
+	data, err := os.ReadFile(path)
+	if err != nil {
+		log.Printf("[FATAL] Could not read flow file: %s", err)
+		return fl
+	} else {
+		if err := json.Unmarshal(data, &fl); err != nil {
+			log.Printf("[FATAL] Could not unmarshal flow JSON: %s", err)
+			return fl
+		}
+		fl = fl.GenerateIdentifier() // Ensure identifier is generated
+		log.Printf("Flow loaded successfully: %s", fl.Identifier)
+		return fl
+	}
+}
+
+func (fl Flow) GetTaskIdentifierByGraphId(graphId int) string {
+	for _, task := range fl.Tasks {
+		if task.GraphId == graphId {
+			return task.Id
+		}
+	}
+	return ""
 }

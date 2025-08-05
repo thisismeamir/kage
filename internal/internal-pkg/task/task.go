@@ -8,21 +8,24 @@ import (
 )
 
 type Task struct {
-	FlowQueue      int             `json:"flow_queue"`
-	Identifier     string          `json:"identifier"`
-	RespectiveNode string          `json:"respective_node"`
-	IdInGraph      int             `json:"id_in_graph"`
-	Type           string          `json:"type"`
-	RespectiveFlow string          `json:"respective_flow"`
-	Input          string          `json:"input,omitempty"`
-	Output         string          `json:"output,omitempty"`
-	Priority       int             `json:"priority"`
-	Urgency        int             `json:"urgency"`
-	Status         int             `json:"status"`
-	CreatedAt      string          `json:"created_at"`
-	ResolvedAt     string          `json:"resolved_at"`
-	RuntimeData    TaskRuntimeData `json:"runtime_data,omitempty"`
-	ResourceTag    int             `json:"resource_tag,omitempty"`
+	FlowQueue           int             `json:"flow_queue"`
+	Identifier          string          `json:"identifier"`
+	RespectiveNode      string          `json:"respective_node"`
+	IdInGraph           int             `json:"id_in_graph"`
+	DependenciesInGraph []int           `json:"dependencies_in_graph,omitempty"`
+	DependenciesInFlow  []string        `json:"dependencies_in_flow,omitempty"`
+	ExecutionType       string          `json:"execution_type"`
+	Type                string          `json:"type"`
+	RespectiveFlow      string          `json:"respective_flow"`
+	Input               string          `json:"input,omitempty"`
+	Output              string          `json:"output,omitempty"`
+	Priority            int             `json:"priority"`
+	Urgency             int             `json:"urgency"`
+	Status              int             `json:"status"`
+	CreatedAt           string          `json:"created_at"`
+	ResolvedAt          string          `json:"resolved_at"`
+	RuntimeData         TaskRuntimeData `json:"runtime_data,omitempty"`
+	ResourceTag         int             `json:"resource_tag,omitempty"`
 }
 
 type TaskRuntimeData struct {

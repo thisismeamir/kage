@@ -15,8 +15,8 @@ type TaskManager struct {
 }
 
 type Queue struct {
-	NodeBasedTasks []flow.TaskRegister `json:"node_based_tasks"`
-	MapBasedTasks  []flow.TaskRegister `json:"flow_based_tasks"`
+	NodeBasedTasks map[int][]flow.TaskRegister `json:"node_based_tasks"`
+	MapBasedTasks  map[int][]flow.TaskRegister `json:"flow_based_tasks"`
 }
 
 func InitializeTaskManager(c config.Config) TaskManager {
@@ -40,6 +40,7 @@ func InitializeTaskManager(c config.Config) TaskManager {
 		}
 	}
 	tm.Clean()
+	tm.QueueGenerator()
 	tm.Save(queuePath, flowRegistryPath)
 	return tm
 }
@@ -186,17 +187,17 @@ func (tm *TaskManager) CleanDuplicatedFlows() {
 }
 
 func (tm *TaskManager) CleanNonExistingFlows() {
-	for _, flow := range tm.Flows {
-		if _, err := os.Stat(flow.Path); os.IsNotExist(err) {
-			log.Printf("Flow %s does not exist at path %s, removing from task manager.", flow.Identifier, flow.Path)
-			tm.RemoveFlow(flow.Identifier)
+	for _, fl := range tm.Flows {
+		if _, err := os.Stat(fl.Path); os.IsNotExist(err) {
+			log.Printf("Flow %s does not exist at path %s, removing from task manager.", fl.Identifier, fl.Path)
+			tm.RemoveFlow(fl.Identifier)
 		}
 	}
 }
 
 func (tm *TaskManager) RemoveFlow(identifier string) {
-	for i, flow := range tm.Flows {
-		if flow.Identifier == identifier {
+	for i, fl := range tm.Flows {
+		if fl.Identifier == identifier {
 			tm.Flows = append(tm.Flows[:i], tm.Flows[i+1:]...)
 			log.Printf("Flow %s removed from task manager.", identifier)
 			return
@@ -206,20 +207,38 @@ func (tm *TaskManager) RemoveFlow(identifier string) {
 }
 
 func (tm *TaskManager) CleanFinishedOrCanceledTasks() {
-	for _, task := range tm.Queue.NodeBasedTasks {
-		if task.Status == 3 || task.Status == 4 { // Assuming 2 is finished and 3 is canceled
-			log.Printf("Removing finished or canceled task %s from queue.", task.Id)
-			tm.RemoveTaskFromQueue(task.Id)
+	for _, level := range tm.Queue.NodeBasedTasks {
+		for _, task := range level {
+			if task.Status == 3 || task.Status == 4 {
+				log.Printf("Removing finished or canceled task %s from queue.", task.Id)
+				tm.RemoveTaskFromQueue(task.Id)
+			}
+		}
+	}
+
+	for _, level := range tm.Queue.MapBasedTasks {
+		for _, task := range level {
+			if task.Status == 3 || task.Status == 4 {
+				log.Printf("Removing finished or canceled task %s from queue.", task.Id)
+				tm.RemoveTaskFromQueue(task.Id)
+			}
 		}
 	}
 }
 
 func (tm *TaskManager) RemoveTaskFromQueue(taskId string) {
-	for i, task := range tm.Queue.NodeBasedTasks {
-		if task.Id == taskId {
-			tm.Queue.NodeBasedTasks = append(tm.Queue.NodeBasedTasks[:i], tm.Queue.NodeBasedTasks[i+1:]...)
-			log.Printf("Task %s removed from queue.", taskId)
-			return
+	for level, tasks := range tm.Queue.NodeBasedTasks {
+		for i, task := range tasks {
+			if task.Id == taskId {
+				tm.Queue.NodeBasedTasks[level] = append(tm.Queue.NodeBasedTasks[level][:i], tm.Queue.NodeBasedTasks[level][i+1:]...)
+			}
+		}
+	}
+	for level, tasks := range tm.Queue.MapBasedTasks {
+		for i, task := range tasks {
+			if task.Id == taskId {
+				tm.Queue.MapBasedTasks[level] = append(tm.Queue.MapBasedTasks[level][:i], tm.Queue.MapBasedTasks[level][i+1:]...)
+			}
 		}
 	}
 	log.Printf("Task %s not found in queue.", taskId)

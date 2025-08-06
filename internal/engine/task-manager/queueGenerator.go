@@ -9,8 +9,8 @@ import (
 func (tm *TaskManager) QueueGenerator() {
 	log.Printf("\n\n\n Queue Generator Started \n\n\n ")
 	nodes, maps := tm.GetAllTasks().GroupByLevel().Sort().SplitGroupedTaskByType()
-	log.Printf("Queuing %v ", nodes)
-	log.Printf("Queuing %v", maps)
+	tm.Queue.NodeBasedTasks = nodes
+	tm.Queue.MapBasedTasks = maps
 
 }
 

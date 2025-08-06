@@ -44,7 +44,7 @@ func (groupedTasks GroupedTask) Sort() GroupedTask {
 		})
 
 		sort.SliceStable(tasks, func(i, j int) bool {
-			return tasks[i].Urgency < tasks[j].Urgency
+			return tasks[i].Urgency > tasks[j].Urgency
 		})
 
 		groupedTasks[level] = tasks

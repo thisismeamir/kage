@@ -99,16 +99,17 @@ func main() {
 	tm := task_manager.InitializeTaskManager(conf)
 	fmt.Printf("%v ", tm)
 
-	for i := 0; i < 20; i++ {
-		e := event.Event{
-			Graph:   "Sample-Graph.0.0.1.graph",
-			Date:    time.Now().Format("2006-01-02-15-04-05"),
-			Urgency: i % 4,
-		}
-		e = e.GenerateIdentifier()
-		_ = scheduler.Scheduler(e, *reg, conf)
-	}
-	//log.Printf("Scheduler initialized with event: %v\n", f)
+	//for i := 0; i < 20; i++ {
+	//	e := event.Event{
+	//		Graph:   "Sample-Graph.0.0.1.graph",
+	//		Date:    time.Now().Format("2006-01-02-15-04-.000000"),
+	//		Urgency: i % 4,
+	//	}
+	//	e = e.GenerateIdentifier()
+	//	f := scheduler.Scheduler(e, *reg, conf)
+	//	log.Printf("Scheduler initialized with event: %v\n", f)
+	//}
+
 	//Start the server
 	log.Println("Starting Server in", serverAddr)
 	srv := server.New(clientAddr)

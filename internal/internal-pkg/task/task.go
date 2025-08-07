@@ -43,7 +43,7 @@ func (t Task) GetIdentifier() string {
 }
 
 func (t Task) GenerateIdentifier() Task {
-	t.Identifier = fmt.Sprintf("%d.%s.task", t.FlowQueue, t.RespectiveFlow)
+	t.Identifier = fmt.Sprintf("%d.%s.task", t.FlowQueue, t.RespectiveFlow[:len(t.RespectiveFlow)-5])
 	return t
 }
 

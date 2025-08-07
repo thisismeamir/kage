@@ -2,6 +2,7 @@ package flow
 
 import (
 	"encoding/json"
+	"github.com/thisismeamir/kage/internal/internal-pkg/task"
 	"log"
 	"os"
 )
@@ -26,10 +27,11 @@ type TaskRegister struct {
 	Urgency     int    `json:"urgency"`
 	ResourceTag int    `json:"resource_tag,omitempty"`
 	Status      int    `json:"status"`
+	PathOfTask  string `json:"path_of_task,omitempty"`
 }
 
 func (fl Flow) GenerateIdentifier() Flow {
-	fl.Identifier = fl.RespectiveEvent + ".flow"
+	fl.Identifier = fl.RespectiveEvent[:len(fl.RespectiveEvent)-5] + ".flow"
 	return fl
 }
 

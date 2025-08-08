@@ -72,7 +72,7 @@ func (registry *Registry) AddMap(m mapping.Map, identifier string, path string) 
 	registry.MapRegistry = append(registry.MapRegistry, MapRegister{
 		Identifier:   identifier,
 		Path:         path,
-		InputSchema:  m.Model.InputSchema,
+		InputSchema:  m.Model.InputSchemas,
 		OutputSchema: m.Model.OutputSchema,
 	})
 }

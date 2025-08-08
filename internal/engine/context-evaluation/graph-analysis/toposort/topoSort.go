@@ -6,13 +6,13 @@ import (
 )
 
 type TopoLevel struct {
-	Level int
-	Nodes []int
+	Level int   `json:"level"`
+	Nodes []int `json:"nodes"`
 }
 
 type TopoSchedule struct {
-	Order  []int
-	Levels []TopoLevel
+	Order  []int       `json:"order"`
+	Levels []TopoLevel `json:"levels"`
 }
 
 func TopoSort(gr []graph.GraphObject) (TopoSchedule, error) {

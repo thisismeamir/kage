@@ -1,0 +1,75 @@
+package task_manager
+
+import (
+	"github.com/thisismeamir/kage/internal/engine/context-evaluation/graph-analysis/toposort"
+	"github.com/thisismeamir/kage/internal/internal-pkg/config"
+	"github.com/thisismeamir/kage/internal/internal-pkg/registry"
+	"github.com/thisismeamir/kage/pkg/graph"
+	"github.com/thisismeamir/kage/util"
+)
+
+func (e *Event) ScheduleFlow(conf config.Config, reg registry.Registry) Flow {
+	// Creating a new flow based on the event information.
+	fl := Flow{
+		Identifier:      IdentifierGeneration("flow"),
+		Type:            "flow",
+		GraphIdentifier: e.GraphIdentifier,
+		EventIdentifier: e.Identifier,
+		Status:          0,
+		Urgency:         e.Urgency,
+		TaskList:        make(map[int][]Task),
+		Input:           e.Input,
+	}
+	// Loading Graph
+	gr, _ := reg.LoadGraph(fl.GraphIdentifier)
+	// Sorting the graph with Topological sort to know which nodes (tasks) comes first
+	sortedStructure, _ := toposort.TopoSort(gr.Model.Structure)
+	fl.Structure = sortedStructure
+	// Counting from zero so that each task has a unique number for queue
+	count := 0
+	// Iterating through the sorted structure to create tasks
+	for level, nodeIds := range sortedStructure.Levels {
+		for _, id := range nodeIds.Nodes {
+			obj, _ := gr.GetObject(id)
+			var deps []int
+			flowDeps := make([]string, 0)
+			var input map[string]interface{}
+			if level == 0 {
+				// Having a node id -1 in task deps means that it doesn't have any deps (Should be injected with the event input instead).
+				deps = append(deps, -1)
+				input = e.Input
+			} else {
+				deps = gr.GetDependency(obj.Id)
+				for i := level - 1; i >= 0; i-- {
+					for _, task := range fl.TaskList[i] {
+						if util.IntInList(obj.Id, task.GraphOutgoing) {
+							flowDeps = append(flowDeps, task.Identifier)
+						}
+					}
+				}
+			}
+			newTask := Task{
+				Identifier:     IdentifierGeneration("task"),
+				Type:           "task",
+				ExecutionType:  obj.Type,
+				NodeIdentifier: obj.ExecutionIdentifier,
+				GraphOutgoing:  obj.Outgoing,
+				GraphIngoing:   deps,
+				FlowDependency: flowDeps,
+				Level:          level,
+				Queue:          count,
+				Input:          input,
+				Status:         0,
+			}
+			fl.TaskList[level] = append(fl.TaskList[level], newTask)
+
+			count++
+		}
+	}
+	SaveFlow(fl, conf.BasePath+"/cache"+"/flows/")
+	return fl
+}
+
+func CreateTasksFromGraph(gr graph.Graph, reg registry.Registry) {
+
+}

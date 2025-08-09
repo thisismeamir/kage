@@ -8,14 +8,16 @@ import (
 	engine2 "github.com/thisismeamir/kage/internal/engine"
 	execution_system "github.com/thisismeamir/kage/internal/engine/execution-system"
 	system_monitor "github.com/thisismeamir/kage/internal/engine/system-monitor"
-	task_manager "github.com/thisismeamir/kage/internal/engine/task-manager"
 	"github.com/thisismeamir/kage/internal/internal-pkg/config"
 	"github.com/thisismeamir/kage/internal/internal-pkg/registry"
+	"github.com/thisismeamir/kage/internal/server"
 	"github.com/thisismeamir/kage/internal/watcher"
-	"github.com/thisismeamir/kage/util"
 	"log"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
+	"time"
 )
 
 var serverAddr string
@@ -79,37 +81,82 @@ func init() {
 	}
 	endArt, _ := os.ReadFile("./util/main-banner")
 	fmt.Println("\n" + string(endArt))
-
 }
 
 func main() {
-	reg, _ = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
-	sm := system_monitor.NewSystemMonitor()
-	ex := execution_system.NewExecutionSystem()
-	newEvent := task_manager.Event{
-		Identifier:      task_manager.IdentifierGeneration("event"),
-		GraphIdentifier: "Sample-Graph.0.0.1.graph",
-		Urgency:         1,
-		Input:           util.LoadJson("/home/kid-a/kage/first/sample_input.json"),
+	// Load registry and create engine components
+	var err error
+	reg, err = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
+	if err != nil {
+		log.Fatalf("[FATAL] Unable to load registry: %s", err)
 	}
 
-	newEvent.ScheduleFlow(conf, *reg)
-	// Create a new Engine
+	sm := system_monitor.NewSystemMonitor()
+	ex := execution_system.NewExecutionSystem()
+
+	// Create the engine
 	engine := engine2.NewEngine(conf, *reg, *ex, *sm)
 
-	// Create context and wait group for concurrency control
-	ctx, _ := context.WithCancel(context.Background())
+	// Create the server
+	srv := server.New(clientAddr)
+
+	// Create context for graceful shutdown
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Create WaitGroup to wait for all goroutines to finish
 	var wg sync.WaitGroup
 
+	// Channel to listen for interrupt signal for graceful shutdown
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	// Start the engine routine in a separate goroutine
 	wg.Add(1)
-	go engine.Routine(ctx, &wg) // Run the engine's routine in the background
+	go func() {
+		log.Println("Starting engine routine...")
+		engine.Routine(ctx, &wg)
+	}()
 
-	//// For example, if you want to stop it after 30 seconds:
-	//time.Sleep(30 * time.Second)
-	//cancel() // This will stop the engine
+	// Start the server in a separate goroutine with timeout handling
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		log.Printf("Starting server on %s...", serverAddr)
 
-	// Wait for the goroutine to complete before shutting down
+		// Create a channel to receive server start result
+		serverErr := make(chan error, 1)
+
+		// Start server in another goroutine
+		go func() {
+			serverErr <- srv.Start(serverAddr)
+		}()
+
+		// Wait for either context cancellation or server error
+		select {
+		case <-ctx.Done():
+			log.Println("Server stopping due to context cancellation...")
+			return
+		case err := <-serverErr:
+			if err != nil {
+				log.Printf("Server error: %v", err)
+				cancel() // Cancel context to stop other components
+			}
+		}
+	}()
+
+	// Wait for interrupt signal
+	go func() {
+		<-sigChan
+		log.Println("Received interrupt signal, shutting down gracefully...")
+		cancel() // This will trigger both engine and server to stop
+
+		// Give components time to shutdown gracefully
+		time.Sleep(2 * time.Second)
+	}()
+
+	// Wait for all goroutines to complete
+	log.Println("Application started successfully. Press Ctrl+C to stop.")
 	wg.Wait()
-	log.Println("Engine stopped")
-
+	log.Println("Application stopped gracefully.")
 }

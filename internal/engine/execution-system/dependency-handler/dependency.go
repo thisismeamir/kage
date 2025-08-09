@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	task_manager "github.com/thisismeamir/kage/internal/engine/task-manager"
 	"github.com/thisismeamir/kage/internal/internal-pkg/config"
+	"log"
 	"os"
 )
 
@@ -12,18 +13,19 @@ func CheckTaskDependency(task task_manager.Task, conf config.Config) []map[strin
 	// Check if the task has any dependencies
 	if len(task.FlowDependency) > 0 {
 		for _, dep := range task.FlowDependency {
-			_, err := os.Stat(conf.BasePath + "/tmp/" + task.FlowIdentifier + "/" + dep + ".output.json")
+			depPath := conf.BasePath + "/tmp/" + task.FlowIdentifier + "/" + dep + ".output.json"
+			_, err := os.Stat(depPath)
 			if err != nil {
 				if os.IsNotExist(err) {
-					// Dependency file does not exist, return an error
+					log.Printf("dependency %v does not exist", depPath)
 					dependencyEvaluationList = append(dependencyEvaluationList, map[string]int{dep: -1}) // Means Dependencies are not satisfied (This is an error because we sorted the tasks, so if
 					// we reach here, it means the task cannot run)
 				} else {
-					// Some other error occurred, log it
+					log.Printf("dependency %v does not exist because of an unknown error", depPath)
 					dependencyEvaluationList = append(dependencyEvaluationList, map[string]int{dep: -1})
 				}
 			} else {
-				dependencyEvaluationList = append(dependencyEvaluationList, map[string]int{dep: -1})
+				dependencyEvaluationList = append(dependencyEvaluationList, map[string]int{dep: 1})
 			}
 		}
 	} else {

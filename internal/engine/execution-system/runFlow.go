@@ -8,10 +8,29 @@ import (
 )
 
 func RunFlow(identifier string, conf config.Config, reg registry.Registry) {
-	flow := task_manager.LoadFlow(conf.BasePath + "/cache/flows/" + identifier + ".json")
-	tasks := flow.GetTasksLinearized()
-	for _, task := range tasks {
-		process.ProcessTask(&task, conf, reg)
+	flowPath := conf.BasePath + "/cache/flows/"
+	flow := task_manager.LoadFlow(flowPath + identifier + ".json")
+	flow.Status = 1
+	for _, tasks := range flow.TaskList {
+		for _, task := range tasks {
+			status := process.ProcessTask(&task, conf, reg)
+			flow.UpdateTaskStatus(task.Identifier, status)
+			task_manager.SaveFlow(flow, flowPath)
+		}
 	}
-
+	var flowDone = true
+	for _, tts := range flow.TaskList {
+		for _, t := range tts {
+			// Checking if all ts are
+			if t.Status != 2 {
+				if t.Status >= 0 {
+					flowDone = false
+				}
+			}
+		}
+	}
+	if flowDone {
+		flow.Status = 2
+		task_manager.SaveFlow(flow, flowPath)
+	}
 }

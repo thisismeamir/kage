@@ -41,7 +41,7 @@ func (ex *ExecutionSystem) CreateCurrentlyAvailableFlowsList(sm *system_monitor.
 		SkipDisk:    false,
 	}
 	for _, flow := range ex.Flows {
-		if system_monitor.IsFlowAbleToRun(flow, sm, conf, opts) && !ex.IsFlowCurrentlyAvailable(flow) {
+		if system_monitor.IsFlowAbleToRun(flow, sm, conf, opts) && !ex.IsFlowCurrentlyAvailable(flow) && flow.Status < 2 && flow.Status >= 0 {
 			ex.CurrentlyAvailableFlows = append(ex.CurrentlyAvailableFlows, flow)
 		}
 	}

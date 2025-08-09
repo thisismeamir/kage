@@ -1,7 +1,6 @@
 package process
 
 import (
-	"encoding/json"
 	"fmt"
 	dependency_handler "github.com/thisismeamir/kage/internal/engine/execution-system/dependency-handler"
 	language_handlers "github.com/thisismeamir/kage/internal/engine/execution-system/language-handlers"
@@ -11,30 +10,35 @@ import (
 	"github.com/thisismeamir/kage/util"
 	"log"
 	"os"
-	"path/filepath"
-	"time"
 )
 
-func ProcessTask(task *task_manager.Task, conf config.Config, reg registry.Registry) {
+func ProcessTask(task *task_manager.Task, conf config.Config, reg registry.Registry) int {
 	// First off, we make sure that all of the dependencies are satisfied. Otherwise, we skip the task.
-	if dependency_handler.AllowedByDependencies(*task, conf) && task.Status != 3 {
-		task.Status = 1
-		deps := dependency_handler.FetchDependencies(*task, conf)
-		switch task.ExecutionType {
-		case "node":
-			log.Printf("[RUNNING] Node Task %s", task.Identifier)
-			if task.Level == 0 {
-				inputFile := util.LoadJson(task.Input[0])
-				task.Status = NodeProcessHandler(*task, inputFile, conf, reg)
-			} else {
-				task.Status = NodeProcessHandler(*task, deps[0], conf, reg)
+	var status int
+	if task.Status == 0 {
+		if dependency_handler.AllowedByDependencies(*task, conf) {
+			status = 1
+			deps := dependency_handler.FetchDependencies(*task, conf)
+			switch task.ExecutionType {
+			case "node":
+				log.Printf("[RUNNING] Node Task %s", task.Identifier)
+				if task.Level == 0 {
+					inputFile := util.LoadJson(task.Input[0])
+					status = NodeProcessHandler(*task, inputFile, conf, reg)
+				} else {
+					status = NodeProcessHandler(*task, deps[0], conf, reg)
+				}
+			case "map":
+				log.Printf("[RUNNING] Map Task %s", task.Identifier)
+				status = MapProcessHandler(*task, deps, conf, reg)
+			default:
+				log.Printf("Undefined task type: %s. Skipping task: %s", task.Type, task.Identifier)
 			}
-		case "map":
-			task.Status = MapProcessHandler(*task, deps, conf, reg)
-		default:
-			log.Printf("Undefined task type: %s. Skipping task: %s", task.Type, task.Identifier)
 		}
+	} else {
+		log.Print("Task is Already Done.")
 	}
+	return status
 }
 
 func MapProcessHandler(task task_manager.Task, deps []map[string]interface{}, conf config.Config, reg registry.Registry) int {
@@ -80,7 +84,7 @@ func NodeProcessHandler(t task_manager.Task, dep map[string]interface{}, conf co
 		log.Printf("Failed to execute node %s for task %s: %v", t.NodeIdentifier, t.Identifier, err)
 		return -1 // Error status
 	}
-
+	util.SaveRuntimeDataInCSV(*result, t.NodeIdentifier, conf)
 	// Process the execution result
 	return processExecutionResult(t, result, conf)
 }
@@ -106,18 +110,6 @@ func buildEnvironment(task task_manager.Task, conf config.Config) map[string]str
 	//}
 
 	return env
-}
-
-// getExecutionTimeout gets the execution timeout from config
-func getExecutionTimeout(n task_manager.Task) time.Duration {
-	// You'll need to adjust this based on your config structure
-	// PlaceHolder
-	//if timeout := 0; timeout > 0 {
-	//	return timeout
-	//}
-
-	// Default timeout
-	return 30 * time.Minute
 }
 
 // processExecutionResult processes the execution result and determines the task status
@@ -163,38 +155,7 @@ func saveTaskOutput(task task_manager.Task, result *language_handlers.ExecutionR
 	if result.OutputJsonPath == "" {
 		return nil
 	}
-
-	// Determine output path
-	outputPath := getTaskOutputPath(task, conf)
-
-	// Create output directory if it doesn't exist
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
-		return fmt.Errorf("failed to create output directory: %w", err)
-	}
-
-	// Marshal the output to JSON
-	data, err := os.ReadFile(result.OutputJsonPath)
-	outputData, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		return fmt.Errorf("failed to marshal output: %w", err)
-	}
-
-	// Write to file
-	if err := os.WriteFile(outputPath, outputData, 0644); err != nil {
-		return fmt.Errorf("failed to write output file: %w", err)
-	}
-	_ = os.Remove(result.OutputJsonPath)
-
-	log.Printf("Task %s output saved to %s", task.Identifier, outputPath)
+	outputPath := conf.BasePath + "/tmp/" + task.FlowIdentifier + "/" + task.Identifier + ".output.json"
+	os.Rename(result.OutputJsonPath, outputPath)
 	return nil
-}
-
-// getTaskOutputPath determines where to save the task output
-func getTaskOutputPath(task task_manager.Task, conf config.Config) string {
-	// You'll need to adjust this based on your config structure
-	baseDir := conf.BasePath + "/tmp/" + task.FlowIdentifier
-
-	// Create a filename based on task identifiers
-	filename := fmt.Sprintf("%s.output.json", task.Identifier)
-	return filepath.Join(baseDir, filename)
 }

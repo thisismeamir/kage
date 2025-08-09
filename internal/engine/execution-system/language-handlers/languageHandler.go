@@ -151,11 +151,15 @@ func (h *PythonHandler) Execute(exec *Execution) (*ExecutionResult, error) {
 	}
 
 	entryFile := filepath.Join(exec.Node.Model.Source, exec.Node.Model.EntryFile)
+	outputJsonPath := exec.Node.Model.OutputDirectory + exec.Task.Identifier + ".output.json"
+
+	log.Printf("Output json path: %s", outputJsonPath)
+	_ = os.MkdirAll(exec.Node.Model.OutputDirectory, 0755)
 	cmd := execute.Command(
 		executable,
 		entryFile,
 		"--input", exec.Input,
-		"--output-json", "./output.json",
+		"--output-json", outputJsonPath,
 	)
 	cmd.Dir = workDir
 
@@ -165,16 +169,9 @@ func (h *PythonHandler) Execute(exec *Execution) (*ExecutionResult, error) {
 		cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", k, v))
 	}
 
-	result, err := h.executeCommand(cmd)
-	if err != nil {
-		return result, err
-	}
+	result, _ := h.executeCommand(cmd)
 
-	// Try to parse output from output directory or stdout
-	if err := h.parseOutput(exec, result); err != nil {
-		return result, err
-	}
-
+	result.OutputJsonPath = exec.Node.Model.OutputDirectory + exec.Task.Identifier + ".output.json"
 	return result, nil
 }
 

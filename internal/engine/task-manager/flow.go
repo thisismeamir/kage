@@ -41,3 +41,18 @@ func (fl *Flow) GetTasksLinearized() []Task {
 	}
 	return taskList
 }
+
+func (fl *Flow) UpdateTaskStatus(taskIdentifier string, status int) {
+	newTaskList := make(map[int][]Task)
+	for level, tasks := range fl.TaskList {
+		newTasks := make([]Task, len(tasks))
+		for i, task := range tasks {
+			if task.Identifier == taskIdentifier {
+				task.Status = status
+			}
+			newTasks[i] = task
+		}
+		newTaskList[level] = newTasks
+	}
+	fl.TaskList = newTaskList
+}

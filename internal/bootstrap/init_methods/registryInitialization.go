@@ -46,11 +46,8 @@ func InitializeRegistries(paths []string, registryPath string) error {
 				newNodeIdentifier := GenerateNodeIdentifier(*newNode)
 				// Checking to see if the node already is there in the registry
 				if reg.Contains(newNodeIdentifier, file) {
-					log.Printf("Node %s, already exists in registry with path: %s", newNodeIdentifier, file)
 				} else {
 					// If the node is new we add this to our registry
-					log.Printf("Node %s does not exist in registry with path: %s", newNode.Name, file)
-					log.Printf("Adding Node with identifier %s to registry.", newNodeIdentifier)
 					reg.AddNode(*newNode, newNodeIdentifier, file)
 				}
 			}
@@ -63,10 +60,7 @@ func InitializeRegistries(paths []string, registryPath string) error {
 			} else {
 				newMapIdentifier := GenerateMapIdentifier(*newMap)
 				if reg.Contains(newMapIdentifier, file) {
-					log.Printf("Map %s already exists in registry with path: %s", newMapIdentifier, file)
 				} else {
-					log.Printf("Map %s does not exist in registry with path: %s", newMap.Name, file)
-					log.Printf("Adding Map with identifier %s to registry.", newMapIdentifier)
 					reg.AddMap(*newMap, newMapIdentifier, file)
 				}
 			}
@@ -77,7 +71,6 @@ func InitializeRegistries(paths []string, registryPath string) error {
 			} else {
 				newGraphIdentifier := GenerateGraphIdentifier(newGraph)
 				if reg.Contains(newGraphIdentifier, file) {
-					log.Printf("Graph %s already exists in registry with path: %s", newGraphIdentifier, file)
 				} else {
 					reg.AddGraph(newGraphIdentifier, file)
 				}
@@ -97,7 +90,6 @@ func InitializeRegistries(paths []string, registryPath string) error {
 func FindAllJsons(paths []string) []string {
 	files := make([]string, 0)
 	for _, path := range paths {
-		log.Printf("Checking path: %s", path)
 		err := filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
@@ -112,7 +104,6 @@ func FindAllJsons(paths []string) []string {
 			log.Printf("Error walking path %s: %v", path, err)
 		}
 	}
-	log.Printf("Found %d files", len(files))
 	return files
 }
 

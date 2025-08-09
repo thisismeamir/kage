@@ -8,10 +8,9 @@ type NodeRegister struct {
 }
 
 type MapRegister struct {
-	Identifier   string                   `json:"identifier"`
-	Path         string                   `json:"path"`
-	InputSchema  []map[string]interface{} `json:"input_schema"`
-	OutputSchema map[string]interface{}   `json:"output_schema"`
+	Identifier string                 `json:"identifier"`
+	Path       string                 `json:"path"`
+	Model      map[string]interface{} `json:"model"`
 }
 
 type GraphRegister struct {

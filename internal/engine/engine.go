@@ -49,16 +49,12 @@ func (e *Engine) Routine(ctx context.Context, wg *sync.WaitGroup) {
 
 // executeFlows fetches and executes the flows based on available system state
 func (e *Engine) executeFlows() {
-	// Step 1: Fetch new flows from the system monitor (e.g., check for available tasks)
 	e.ExecutionSystem.FetchFlows(e.Configuration)
-
-	// Step 2: Identify flows that can be executed from the available flows list
-	// You'll need to write logic to filter out flows that are not ready for execution
 	e.ExecutionSystem.CreateCurrentlyAvailableFlowsList(&e.SystemMonitor, e.Configuration)
 
-	// Step 3: For each executable flow, execute it using the ExecutionSystem and Registry
 	for _, flow := range e.ExecutionSystem.CurrentlyAvailableFlows {
-		// Run the flow using the ExecutionSystem
-		execution_system.RunFlow(flow.Identifier, e.Configuration, e.Registry)
+		if flow.Status != 2 {
+			execution_system.RunFlow(flow.Identifier, e.Configuration, e.Registry)
+		}
 	}
 }

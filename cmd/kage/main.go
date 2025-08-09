@@ -1,18 +1,22 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/thisismeamir/kage/internal/bootstrap/init_methods"
-	"github.com/thisismeamir/kage/internal/engine/scheduler"
-	task_manager "github.com/thisismeamir/kage/internal/engine/task-manager"
+	engine2 "github.com/thisismeamir/kage/internal/engine"
+	execution_system "github.com/thisismeamir/kage/internal/engine/execution-system"
+	system_monitor "github.com/thisismeamir/kage/internal/engine/system-monitor"
 	"github.com/thisismeamir/kage/internal/internal-pkg/config"
-	"github.com/thisismeamir/kage/internal/internal-pkg/event"
 	"github.com/thisismeamir/kage/internal/internal-pkg/registry"
 	"github.com/thisismeamir/kage/internal/server"
 	"github.com/thisismeamir/kage/internal/watcher"
 	"log"
 	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 )
 
@@ -60,20 +64,6 @@ func init() {
 	if err := w.Start(); err != nil {
 		log.Fatalf("[FATAL] Watcher failed to start: %v", err)
 	}
-	// Watcher for Task Manager to know about changes in flows directory
-	w2, err := watcher.NewWatcher([]string{conf.BasePath + "/tmp/flows"}, func(event watcher.FileSystemEvent) {
-		if event.Event == fsnotify.Create || event.Event == fsnotify.Remove {
-			log.Println("[INFO] Task Manager detected a change in flows directory, re-initializing Task Manager.")
-			task_manager.InitializeTaskManager(conf)
-		}
-
-	})
-	if err != nil {
-		log.Fatalf("[FATAL] Unable to start watcher: %v", err)
-	}
-	if err := w2.Start(); err != nil {
-		log.Fatalf("[FATAL] Watcher failed to start: %v", err)
-	}
 
 	// setting up global values:
 	serverAddr = fmt.Sprintf("%s:%d", conf.Server.Host, conf.Server.Port)
@@ -94,26 +84,79 @@ func init() {
 }
 
 func main() {
-	reg, _ = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
-
-	tm := task_manager.InitializeTaskManager(conf)
-	fmt.Printf("%v ", tm)
-
-	//for i := 0; i < 20; i++ {
-	//	e := event.Event{
-	//		Graph:   "Sample-Graph.0.0.1.graph",
-	//		Date:    time.Now().Format("2006-01-02-15-04-.000000"),
-	//		Urgency: i % 4,
-	//	}
-	//	e = e.GenerateIdentifier()
-	//	f := scheduler.Scheduler(e, *reg, conf)
-	//	log.Printf("Scheduler initialized with event: %v\n", f)
-	//}
-
-	//Start the server
-	log.Println("Starting Server in", serverAddr)
-	srv := server.New(clientAddr)
-	if err := srv.Start(serverAddr); err != nil {
-		log.Fatal("Failed to start server:", err)
+	// Load registry and create engine components
+	var err error
+	reg, err = registry.LoadRegistry(conf.BasePath + "/data/registry.json")
+	if err != nil {
+		log.Fatalf("[FATAL] Unable to load registry: %s", err)
 	}
+
+	sm := system_monitor.NewSystemMonitor()
+	ex := execution_system.NewExecutionSystem()
+
+	// Create the engine
+	engine := engine2.NewEngine(conf, *reg, *ex, *sm)
+
+	// Create the server
+	srv := server.New(clientAddr)
+
+	// Create context for graceful shutdown
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Create WaitGroup to wait for all goroutines to finish
+	var wg sync.WaitGroup
+
+	// Channel to listen for interrupt signal for graceful shutdown
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	// Start the engine routine in a separate goroutine
+	wg.Add(1)
+	go func() {
+		log.Println("Starting engine routine...")
+		engine.Routine(ctx, &wg)
+	}()
+
+	// Start the server in a separate goroutine with timeout handling
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		log.Printf("Starting server on %s...", serverAddr)
+
+		// Create a channel to receive server start result
+		serverErr := make(chan error, 1)
+
+		// Start server in another goroutine
+		go func() {
+			serverErr <- srv.Start(serverAddr)
+		}()
+
+		// Wait for either context cancellation or server error
+		select {
+		case <-ctx.Done():
+			log.Println("Server stopping due to context cancellation...")
+			return
+		case err := <-serverErr:
+			if err != nil {
+				log.Printf("Server error: %v", err)
+				cancel() // Cancel context to stop other components
+			}
+		}
+	}()
+
+	// Wait for interrupt signal
+	go func() {
+		<-sigChan
+		log.Println("Received interrupt signal, shutting down gracefully...")
+		cancel() // This will trigger both engine and server to stop
+
+		// Give components time to shutdown gracefully
+		time.Sleep(2 * time.Second)
+	}()
+
+	// Wait for all goroutines to complete
+	log.Println("Application started successfully. Press Ctrl+C to stop.")
+	wg.Wait()
+	log.Println("Application stopped gracefully.")
 }

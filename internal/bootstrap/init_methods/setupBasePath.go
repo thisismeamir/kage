@@ -21,7 +21,7 @@ func SetupBasePath(cfg Config) error {
 		"data/sources/maps",
 		"data/sources/graphs",
 		"logs",
-		"cache",
+		"cache/flows",
 		"tmp",
 	}
 

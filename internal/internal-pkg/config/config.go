@@ -1,13 +1,19 @@
 package config
 
+import (
+	"github.com/thisismeamir/kage/pkg/graph"
+)
+
 type Config struct {
-	Name     string        `json:"name"`
-	BasePath string        `json:"base_path"`
-	Paths    []string      `json:"paths"`
-	Version  string        `json:"version"`
-	Logging  LoggingConfig `json:"logging"`
-	Server   ServerConfig  `json:"server"`
-	Client   ClientConfig  `json:"client"`
+	Name                    string                     `json:"name"`
+	BasePath                string                     `json:"base_path"`
+	Paths                   []string                   `json:"paths"`
+	Version                 string                     `json:"version"`
+	Logging                 LoggingConfig              `json:"logging"`
+	Server                  ServerConfig               `json:"server"`
+	Client                  ClientConfig               `json:"client"`
+	DefaultExecutionPolicy  graph.GraphExecutionPolicy `json:"default_execution_policy"`
+	DefaultWorkingDirectory string                     `json:"default_working_directory"`
 }
 
 type ServerConfig struct {

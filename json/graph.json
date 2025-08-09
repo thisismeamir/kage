@@ -4,7 +4,8 @@
   "type": "graph",
   "model": {
     "execution": {
-      "policy": "string",
+      "policy": {}
+      },
       "priority": "int",
       "timeout": "int",
       "pre_process": "string",

@@ -70,10 +70,9 @@ func (registry *Registry) AddNode(n node.Node, identifier string, path string) {
 
 func (registry *Registry) AddMap(m mapping.Map, identifier string, path string) {
 	registry.MapRegistry = append(registry.MapRegistry, MapRegister{
-		Identifier:   identifier,
-		Path:         path,
-		InputSchema:  m.Model.InputSchema,
-		OutputSchema: m.Model.OutputSchema,
+		Identifier: identifier,
+		Path:       path,
+		Model:      m.Model,
 	})
 }
 

@@ -25,5 +25,11 @@
       "build": "npm build",
       "run": "npm run"
     }
+  },
+  "default_execution_policy": {
+    "cpu_usage_threshold": 80,
+    "memory_usage_threshold": 100,
+    "disk_usage_threshold": 100,
+    "network_usage_threshold": 100000
   }
 }
